@@ -45,16 +45,7 @@ class MouseWheelUp : public Action {
          * @~english
          * Auxiliary variable to implement speed.
          */
-        int scrollCount;
-
-        /**
-         * @~spanish
-         * Emula la rueda del ratón.
-         *
-         * @~english
-         * Emulates the mouse whell.
-         */
-        void scroll() const;
+        int speedCount;
 
     public:
 

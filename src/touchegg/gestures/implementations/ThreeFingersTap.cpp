@@ -42,7 +42,5 @@ bool ThreeFingersTap::isThisGesture(const QHash<QString, QVariant>& attrs) {
     if(attrs.value("touches", -1) != 3)
         return false;
 
-
     return true;
 }
-

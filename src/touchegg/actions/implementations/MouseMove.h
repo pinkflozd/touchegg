@@ -1,5 +1,5 @@
 /**
- * @file /src/touchegg/actions/implementations/MouseWheelDown.h
+ * @file /src/touchegg/actions/implementations/MouseMove.h
  *
  * @~spanish
  * Este archivo es parte del proyecto Touchégg, usted puede redistribuirlo y/o
@@ -9,11 +9,11 @@
  * This file is part of the Touchégg project, you can redistribute it and/or
  * modify it under the terms of the GNU GPL v3.
  *
- * @class  MouseWheelDown
+ * @class  MouseMove
  * @author José Expósito
  */
-#ifndef MOUSEWHEELDOWN_H
-#define MOUSEWHEELDOWN_H
+#ifndef MOUSEMOVE_H
+#define MOUSEMOVE_H
 
 #include "src/touchegg/util/Include.h"
 #include "src/touchegg/actions/implementations/Action.h"
@@ -25,16 +25,16 @@
  * @~english
  * Emulates the mouse whell.
  */
-class MouseWheelDown : public Action {
+class MouseMove : public Action {
 
     private:
 
         /**
          * @~spanish
-         * Velocidad del scroll. A mayor más lento.
+         * Velocidad del ratón. A mayor más lento.
          *
          * @~english
-         * Scroll speed. More is slower.
+         * Mouse speed. More is slower.
          */
         int speed;
 
@@ -58,7 +58,7 @@ class MouseWheelDown : public Action {
          * Constructor
          * @param settings Action settings.
          */
-        MouseWheelDown(const QString& settings);
+        MouseMove(const QString& settings);
 
         /**
          * @~spanish
@@ -107,4 +107,4 @@ class MouseWheelDown : public Action {
 
 };
 
-#endif // MOUSEWHEELDOWN_H
+#endif // MOUSEMOVE_H

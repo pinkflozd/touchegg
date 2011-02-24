@@ -31,16 +31,21 @@ class SendKeys : public Action {
 
         /**
          * @~spanish
-         * Envía la tecla indicada.
-         * @param key Tecla a enviar.
-         * @param pressed Si la tecla se aprieta o se suelta.
+         * Teclas a mantener pulsadas mientras se envían el resto de teclas.
          *
          * @~english
-         * Sends the especific key.
-         * @param key The key to send.
-         * @param pressed If key is pressed or released.
+         * Keys to hold down while sending the rest of keys.
          */
-        void sendKey(KeySym key, bool pressed) const;
+        QList<KeyCode> holdDownKeys;
+
+        /**
+         * @~spanish
+         * Teclas a enviar mientras se mantienen pulsadas las holdDownKeys.
+         *
+         * @~english
+         * Keys to send while holdDownKeys are sending.
+         */
+        QList<KeyCode> pressBetweenKeys;
 
     public:
 

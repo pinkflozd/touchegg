@@ -17,6 +17,7 @@
     // Qt
     #include <QApplication>
     #include <QObject>
+    #include <QDesktopWidget>
     #include <QTimer>
     #include <QThread>
     #include <QDebug>
@@ -36,6 +37,7 @@
     #include <X11/Xlib.h>
     #include <X11/Xutil.h>
     #include <X11/Xatom.h>
+    #include <X11/extensions/XTest.h>
 
     // utouch-geis
     extern "C" {

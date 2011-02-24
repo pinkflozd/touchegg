@@ -1,5 +1,5 @@
 /**
- * @file /src/touchegg/actions/implementations/RightButtonClick.cpp
+ * @file /src/touchegg/gestures/implementations/OneFingerTapAndHold.cpp
  *
  * @~spanish
  * Este archivo es parte del proyecto Touchégg, usted puede redistribuirlo y/o
@@ -9,28 +9,39 @@
  * This file is part of the Touchégg project, you can redistribute it and/or
  * modify it under the terms of the GNU GPL v3.
  *
- * @class  RightButtonClick
+ * @class  OneFingerTapAndHold
  * @author José Expósito
  */
-#include "RightButtonClick.h"
+#include "OneFingerTapAndHold.h"
 
 // ************************************************************************** //
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-RightButtonClick::RightButtonClick(const QString& settings)
-        : Action(settings) {}
+OneFingerTapAndHold::OneFingerTapAndHold(GestureTypeEnum::GestureType type,
+        GeisGestureId id, const QHash<QString, QVariant>& attrs)
+        : Gesture(type, id, attrs) {}
 
 
 // ************************************************************************** //
 // **********                    PUBLIC METHODS                    ********** //
 // ************************************************************************** //
 
-void RightButtonClick::executeStart(const QHash<QString, QVariant>&) {}
+bool OneFingerTapAndHold::isThisGesture(
+        const QHash<QString, QVariant>& attrs) {
+    // "gesture name" = "Drag"
+    if(!attrs.contains("gesture name"))
+        return false;
 
-void RightButtonClick::executeFinish(const QHash<QString, QVariant>&) {}
+    if(attrs.value("gesture name", "") != "Drag")
+        return false;
 
-void RightButtonClick::executeUpdate(const QHash<QString, QVariant>&) {
-    XTestFakeButtonEvent(QX11Info::display(), Button3, true, 0);
-    XTestFakeButtonEvent(QX11Info::display(), Button3, false, 0);
+    // touches = 1
+    if(!attrs.contains("touches"))
+        return false;
+
+    if(attrs.value("touches", -1) != 1)
+        return false;
+
+    return true;
 }

@@ -1,5 +1,5 @@
 /**
- * @file /src/touchegg/actions/implementations/MouseWheelUp.cpp
+ * @file /src/touchegg/actions/implementations/MouseMove.cpp
  *
  * @~spanish
  * Este archivo es parte del proyecto Touchégg, usted puede redistribuirlo y/o
@@ -9,18 +9,18 @@
  * This file is part of the Touchégg project, you can redistribute it and/or
  * modify it under the terms of the GNU GPL v3.
  *
- * @class  MouseWheelUp
+ * @class  MouseMove
  * @author José Expósito
  */
-#include "MouseWheelUp.h"
+#include "MouseMove.h"
 
 // ************************************************************************** //
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-MouseWheelUp::MouseWheelUp(const QString& settings) : Action(settings) {
-    this->speedCount = 0;
-    this->speed      = 4;
+MouseMove::MouseMove(const QString& settings)
+        : Action(settings) {
+    this->speed = 4;
 
     QStringList strl = settings.split("=");
     if(strl.length() == 2 && strl.at(0) == "SPEED") {
@@ -29,10 +29,10 @@ MouseWheelUp::MouseWheelUp(const QString& settings) : Action(settings) {
         if(ok && configSpeed >= 1 && configSpeed <= 10)
             this->speed = 11 - configSpeed;
         else
-            qWarning() << "Error reading MOUSE_WHELL_UP settings, using the " <<
+            qWarning() << "Error reading MOUSE_MOVE settings, using the " <<
                     "default settings";
     } else
-        qWarning() << "Error reading MOUSE_WHELL_UP settings, using the " <<
+        qWarning() << "Error reading MOUSE_MOVE settings, using the " <<
                 "default settings";
 }
 
@@ -41,19 +41,21 @@ MouseWheelUp::MouseWheelUp(const QString& settings) : Action(settings) {
 // **********                    PUBLIC METHODS                    ********** //
 // ************************************************************************** //
 
-void MouseWheelUp::executeStart(const QHash<QString, QVariant>& /*attrs*/) {
-    this->speedCount = 0;
-}
+void MouseMove::executeStart(const QHash<QString, QVariant>& /*attrs*/) {}
 
-void MouseWheelUp::executeUpdate(const QHash<QString, QVariant>& /*attrs*/) {
+void MouseMove::executeUpdate(const QHash<QString, QVariant>& attrs) {
+    if(!attrs.contains("delta x") || !attrs.contains("delta y"))
+        return;
+
     if(this->speedCount >= this->speed) {
-        XTestFakeButtonEvent(QX11Info::display(), Button4, true, 0);
-        XTestFakeButtonEvent(QX11Info::display(), Button4, false, 0);
-        XFlush(QX11Info::display());
+        XTestFakeRelativeMotionEvent(QX11Info::display(),
+                attrs.value("delta x").toFloat() * 3,
+                attrs.value("delta y").toFloat() * 3,
+                0);
         this->speedCount = 0;
     } else {
         this->speedCount++;
     }
 }
 
-void MouseWheelUp::executeFinish(const QHash<QString, QVariant>& /*attrs*/) {}
+void MouseMove::executeFinish(const QHash<QString, QVariant>& /*attrs*/) {}

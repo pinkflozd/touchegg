@@ -13,7 +13,10 @@ HEADERS += \
     src/touchegg/actions/implementations/ChangeDesktop.h \
     src/touchegg/actions/implementations/ResizeWindow.h \
     src/touchegg/actions/implementations/MoveWindow.h \
-    src/touchegg/actions/implementations/RunCommand.h
+    src/touchegg/actions/implementations/RunCommand.h \
+    src/touchegg/actions/implementations/DragAndDrop.h \
+    src/touchegg/actions/implementations/LeftButtonClick.h \
+    src/touchegg/actions/implementations/MouseMove.h
 
 SOURCES += \
     src/touchegg/actions/implementations/RightButtonClick.cpp \
@@ -28,4 +31,7 @@ SOURCES += \
     src/touchegg/actions/implementations/ChangeDesktop.cpp \
     src/touchegg/actions/implementations/ResizeWindow.cpp \
     src/touchegg/actions/implementations/MoveWindow.cpp \
-    src/touchegg/actions/implementations/RunCommand.cpp
+    src/touchegg/actions/implementations/RunCommand.cpp \
+    src/touchegg/actions/implementations/DragAndDrop.cpp \
+    src/touchegg/actions/implementations/LeftButtonClick.cpp \
+    src/touchegg/actions/implementations/MouseMove.cpp

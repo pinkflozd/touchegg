@@ -42,7 +42,16 @@ Gesture* GestureFactory::createGesture(GeisGestureType /*type*/,
         qDebug() << i.key() << i.value();
     }*/
 
-    if(TwoFingersTap::isThisGesture(attrs)) {
+
+    if(OneFingerDrag::isThisGesture(attrs)) {
+        return new OneFingerDrag(GestureTypeEnum::ONE_FINGER_DRAG, id, attrs);
+
+    //--------------------------------------------------------------------------
+
+    } else if(OneFingerTap::isThisGesture(attrs)) {
+        return new OneFingerTap(GestureTypeEnum::ONE_FINGER_TAP, id, attrs);
+
+    } else if(TwoFingersTap::isThisGesture(attrs)) {
         return new TwoFingersTap(GestureTypeEnum::TWO_FINGERS_TAP, id, attrs);
 
     } else if(ThreeFingersTap::isThisGesture(attrs)) {
@@ -125,7 +134,11 @@ Gesture* GestureFactory::createGesture(GeisGestureType /*type*/,
 
 Gesture* GestureFactory::createTapAndHold(GeisGestureType /*type*/,
         GeisGestureId id, QHash<QString, QVariant> attrs) {
-    if(TwoFingersTapAndHold::isThisGesture(attrs)) {
+    if(OneFingerTapAndHold::isThisGesture(attrs)) {
+        return new OneFingerTapAndHold(
+                GestureTypeEnum::ONE_FINGER_TAP_AND_HOLD, id, attrs);
+
+    } else if(TwoFingersTapAndHold::isThisGesture(attrs)) {
         return new TwoFingersTapAndHold(
                 GestureTypeEnum::TWO_FINGERS_TAP_AND_HOLD, id, attrs);
 

@@ -1,5 +1,5 @@
 /**
- * @file /src/touchegg/actions/implementations/MouseWheelDown.h
+ * @file /src/touchegg/actions/implementations/LeftButtonClick.h
  *
  * @~spanish
  * Este archivo es parte del proyecto Touchégg, usted puede redistribuirlo y/o
@@ -9,43 +9,23 @@
  * This file is part of the Touchégg project, you can redistribute it and/or
  * modify it under the terms of the GNU GPL v3.
  *
- * @class  MouseWheelDown
+ * @class  LeftButtonClick
  * @author José Expósito
  */
-#ifndef MOUSEWHEELDOWN_H
-#define MOUSEWHEELDOWN_H
+#ifndef LEFTBUTTONCLICK_H
+#define LEFTBUTTONCLICK_H
 
 #include "src/touchegg/util/Include.h"
 #include "src/touchegg/actions/implementations/Action.h"
 
 /**
  * @~spanish
- * Emula la rueda del ratón.
+ * Emula un click con el botón izquierdo del ratón.
  *
  * @~english
- * Emulates the mouse whell.
+ * Emulates a click with the left mouse button.
  */
-class MouseWheelDown : public Action {
-
-    private:
-
-        /**
-         * @~spanish
-         * Velocidad del scroll. A mayor más lento.
-         *
-         * @~english
-         * Scroll speed. More is slower.
-         */
-        int speed;
-
-        /**
-         * @~spanish
-         * Variable auxiliar para aplicar la velocidad.
-         *
-         * @~english
-         * Auxiliary variable to implement speed.
-         */
-        int speedCount;
+class LeftButtonClick : public Action {
 
     public:
 
@@ -58,7 +38,7 @@ class MouseWheelDown : public Action {
          * Constructor
          * @param settings Action settings.
          */
-        MouseWheelDown(const QString& settings);
+        LeftButtonClick(const QString& settings);
 
         /**
          * @~spanish
@@ -106,5 +86,4 @@ class MouseWheelDown : public Action {
         void executeFinish(const QHash<QString, QVariant>& attrs);
 
 };
-
-#endif // MOUSEWHEELDOWN_H
+#endif // LEFTBUTTONCLICK_H

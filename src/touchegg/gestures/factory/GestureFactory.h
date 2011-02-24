@@ -20,12 +20,15 @@
 #include "src/touchegg/gestures/types/GestureTypeEnum.h"
 #include "src/touchegg/gestures/implementations/Gesture.h"
 
+#include "src/touchegg/gestures/implementations/OneFingerTap.h"
 #include "src/touchegg/gestures/implementations/TwoFingersTap.h"
 #include "src/touchegg/gestures/implementations/ThreeFingersTap.h"
 #include "src/touchegg/gestures/implementations/FourFingersTap.h"
 #include "src/touchegg/gestures/implementations/FiveFingersTap.h"
 
 #include "src/touchegg/gestures/implementations/ThreeFingersPinch.h"
+
+#include "src/touchegg/gestures/implementations/OneFingerDrag.h"
 
 #include "src/touchegg/gestures/implementations/TwoFingersDragUp.h"
 #include "src/touchegg/gestures/implementations/TwoFingersDragDown.h"
@@ -42,6 +45,7 @@
 #include "src/touchegg/gestures/implementations/FourFingersDragLeft.h"
 #include "src/touchegg/gestures/implementations/FourFingersDragRight.h"
 
+#include "src/touchegg/gestures/implementations/OneFingerTapAndHold.h"
 #include "src/touchegg/gestures/implementations/TwoFingersTapAndHold.h"
 #include "src/touchegg/gestures/implementations/ThreeFingersTapAndHold.h"
 #include "src/touchegg/gestures/implementations/FourFingersTapAndHold.h"

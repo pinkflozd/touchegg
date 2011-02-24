@@ -18,6 +18,7 @@
 #include "src/touchegg/util/Include.h"
 #include "src/touchegg/actions/types/ActionTypeEnum.h"
 #include "src/touchegg/actions/implementations/Action.h"
+#include "src/touchegg/actions/implementations/MouseMove.h"
 #include "src/touchegg/actions/implementations/RightButtonClick.h"
 #include "src/touchegg/actions/implementations/MiddleButtonClick.h"
 #include "src/touchegg/actions/implementations/MouseWheelUp.h"
@@ -31,7 +32,8 @@
 #include "src/touchegg/actions/implementations/SendKeys.h"
 #include "src/touchegg/actions/implementations/MoveWindow.h"
 #include "src/touchegg/actions/implementations/RunCommand.h"
-
+#include "src/touchegg/actions/implementations/DragAndDrop.h"
+#include "src/touchegg/actions/implementations/LeftButtonClick.h"
 
 /**
  * @~spanish

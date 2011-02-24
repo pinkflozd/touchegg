@@ -19,42 +19,48 @@
 // ************************************************************************** //
 
 SendKeys::SendKeys(const QString& settings) : Action(settings) {
-    // TODO Read config
-}
+    if(settings.split(":").length() != 2) {
+        qWarning() << "Error reading SEND_KEYS settings";
+        return;
+    }
 
+    QString allHoldDown = settings.split(":").at(0);
+    QString allBetween  = settings.split(":").at(1);
 
-// ************************************************************************** //
-// **********                    PRIVATE METHODS                   ********** //
-// ************************************************************************** //
+    if(allHoldDown.split("=").length() != 2
+            || allBetween.split("=").length() != 2) {
+        qWarning() << "Error reading SEND_KEYS settings";
+        return;
+    }
 
-void SendKeys::sendKey(KeySym key, bool pressed) const {
-    // Obtenemos la ventana que tiene el foco
-    Window window;
-    int    revertTo;
-    XGetInputFocus(QX11Info::display(), &window, &revertTo);
+    if(allHoldDown.split("=").at(0) != "HOLD_DOWN"
+            || allBetween.split("=").at(0) != "PRESS") {
+        qWarning() << "Error reading SEND_KEYS settings";
+        return;
+    }
 
-    //window = QX11Info::appRootWindow(QX11Info::appScreen());
+    QString holdDownStr      = allHoldDown.split("=").at(1);
+    QString betweenStr       = allBetween.split("=").at(1);
+    QStringList holdDownList = holdDownStr.split("|");
+    QStringList betweenList  = betweenStr.split("|");
 
-    // Creamos el evento a enviar
-    XKeyEvent event;
-    event.display     = QX11Info::display();
-    event.root        = QX11Info::appRootWindow(QX11Info::appScreen());
-    event.window      = window;
-    event.subwindow   = None;
-    event.type        = pressed ? KeyPress : KeyRelease;
-    event.time        = CurrentTime;
-    /*event.x           = 0;
-    event.y           = 0;
-    event.x_root      = 0;
-    event.y_root      = 0;*/
-    event.same_screen = true;
-    event.keycode     = XKeysymToKeycode(QX11Info::display(), key);
-    event.state       = NULL;
+    for(int n=0; n<holdDownList.length(); n++) {
+        QString keySymStr = holdDownList.at(n);
+        if(keySymStr != "") {
+            KeySym keySym = XStringToKeysym(keySymStr.toStdString().c_str());
+            KeyCode keyCode = XKeysymToKeycode(QX11Info::display(), keySym);
+            this->holdDownKeys.append(keyCode);
+        }
+    }
 
-    // Enviamos el evento
-    XSendEvent(QX11Info::display(), window, true,
-            pressed ? KeyPressMask : KeyReleaseMask, (XEvent*)&event);
-    XFlush(QX11Info::display());
+    for(int n=0; n<betweenList.length(); n++) {
+        QString keySymStr = betweenList.at(n);
+        if(keySymStr != "") {
+            KeySym keySym = XStringToKeysym(keySymStr.toStdString().c_str());
+            KeyCode keyCode = XKeysymToKeycode(QX11Info::display(), keySym);
+            this->pressBetweenKeys.append(keyCode);
+        }
+    }
 }
 
 
@@ -67,8 +73,19 @@ void SendKeys::executeStart(const QHash<QString, QVariant>& /*attrs*/) {}
 void SendKeys::executeUpdate(const QHash<QString, QVariant>& /*attrs*/) {}
 
 void SendKeys::executeFinish(const QHash<QString, QVariant>& /*attrs*/) {
-    // XStringToKeysym !!
-    this->sendKey(XK_F4, true);
-    usleep(100);
-    this->sendKey(XK_F4, false);
+
+    for(int n=0; n<this->holdDownKeys.length(); n++) {
+        XTestFakeKeyEvent(QX11Info::display(),this->holdDownKeys.at(n),true,0);
+    }
+
+    for(int n=0; n<this->pressBetweenKeys.length(); n++) {
+        XTestFakeKeyEvent(QX11Info::display(), this->pressBetweenKeys.at(n),
+                true, 0);
+        XTestFakeKeyEvent(QX11Info::display(), this->pressBetweenKeys.at(n),
+                false, 0);
+    }
+
+    for(int n=0; n<this->holdDownKeys.length(); n++) {
+        XTestFakeKeyEvent(QX11Info::display(),this->holdDownKeys.at(n),false,0);
+    }
 }

@@ -109,8 +109,14 @@ void GestureCollector::run() {
     gestureFuncs.update  = GestureCollector::gestureUpdate;
     gestureFuncs.finish  = GestureCollector::gestureFinish;
 
+    //TODO No se puede obtener GEIS_GESTURE_TYPE_DRAG1 sin seleccionar
+    //     GEIS_ALL_GESTURES, bug reportado:
+    //     https://bugs.launchpad.net/utouch-geis/+bug/723304
+    //     Cuando se solucione subscribirse SOLO a los gestos que se usen
+
     // Nos subscribimos a los gestos que queremos recibir
-    const char* subscribe[] = {
+    /*const char* subscribe[] = {
+        GEIS_GESTURE_TYPE_TAP1,
         GEIS_GESTURE_TYPE_TAP2,
         GEIS_GESTURE_TYPE_TAP3,
         GEIS_GESTURE_TYPE_TAP4,
@@ -121,10 +127,11 @@ void GestureCollector::run() {
         GEIS_GESTURE_TYPE_DRAG5,
         GEIS_GESTURE_TYPE_PINCH3,
         NULL
-    };
+    };*/
 
-    if(geis_subscribe(geisInstance, GEIS_ALL_INPUT_DEVICES, subscribe,
-            &gestureFuncs, this) != GEIS_STATUS_SUCCESS)
+    if(geis_subscribe(geisInstance, GEIS_ALL_INPUT_DEVICES,
+            GEIS_ALL_GESTURES /*subscribe*/, &gestureFuncs, this)
+            != GEIS_STATUS_SUCCESS)
         qFatal("geis_subscribe: Can't subscribe to gestures");
 
     // Thanks to the geistest developer for this code
@@ -142,7 +149,6 @@ void GestureCollector::run() {
 
         if (FD_ISSET(fd, &read_fds))
           geis_event_dispatch(geisInstance);
-
     }
     // :D
 

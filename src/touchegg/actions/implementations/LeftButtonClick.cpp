@@ -1,5 +1,5 @@
 /**
- * @file /src/touchegg/actions/implementations/RightButtonClick.cpp
+ * @file /src/touchegg/actions/implementations/LeftButtonClick.cpp
  *
  * @~spanish
  * Este archivo es parte del proyecto Touchégg, usted puede redistribuirlo y/o
@@ -9,16 +9,16 @@
  * This file is part of the Touchégg project, you can redistribute it and/or
  * modify it under the terms of the GNU GPL v3.
  *
- * @class  RightButtonClick
+ * @class  LeftButtonClick
  * @author José Expósito
  */
-#include "RightButtonClick.h"
+#include "LeftButtonClick.h"
 
 // ************************************************************************** //
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-RightButtonClick::RightButtonClick(const QString& settings)
+LeftButtonClick::LeftButtonClick(const QString& settings)
         : Action(settings) {}
 
 
@@ -26,11 +26,12 @@ RightButtonClick::RightButtonClick(const QString& settings)
 // **********                    PUBLIC METHODS                    ********** //
 // ************************************************************************** //
 
-void RightButtonClick::executeStart(const QHash<QString, QVariant>&) {}
+void LeftButtonClick::executeStart(const QHash<QString, QVariant>& /*attrs*/) {}
 
-void RightButtonClick::executeFinish(const QHash<QString, QVariant>&) {}
+void LeftButtonClick::executeFinish(const QHash<QString, QVariant>& /*attrs*/){}
 
-void RightButtonClick::executeUpdate(const QHash<QString, QVariant>&) {
-    XTestFakeButtonEvent(QX11Info::display(), Button3, true, 0);
-    XTestFakeButtonEvent(QX11Info::display(), Button3, false, 0);
+void LeftButtonClick::executeUpdate(const QHash<QString, QVariant>& /*attrs*/) {
+    XTestFakeButtonEvent(QX11Info::display(), Button1, true, 0);
+    XTestFakeButtonEvent(QX11Info::display(), Button1, false, 0);
+    XFlush(QX11Info::display());
 }

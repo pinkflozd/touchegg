@@ -3,7 +3,7 @@ TARGET       = touchegg
 QT          += core gui
 OBJECTS_DIR += build
 MOC_DIR     += build
-LIBS        += -lutouch-geis -lX11
+LIBS        += -lutouch-geis -lX11 -lXtst -lXext
 //DEFINES      = QT_NO_DEBUG_OUTPUT
 
 

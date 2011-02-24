@@ -35,6 +35,9 @@ ActionFactory* ActionFactory::getInstance() {
 Action* ActionFactory::createAction(ActionTypeEnum::ActionType actionType,
         const QString& settings) {
     switch(actionType) {
+    case ActionTypeEnum::MOUSE_MOVE:
+        return new MouseMove(settings);
+
     case ActionTypeEnum::RIGHT_BUTTON_CLICK:
         return new RightButtonClick(settings);
 
@@ -73,6 +76,12 @@ Action* ActionFactory::createAction(ActionTypeEnum::ActionType actionType,
 
     case ActionTypeEnum::RUN_COMMAND:
         return new RunCommand(settings);
+
+    case ActionTypeEnum::DRAG_AND_DROP:
+        return new DragAndDrop(settings);
+
+    case ActionTypeEnum::LEFT_BUTTON_CLICK:
+        return new LeftButtonClick(settings);
 
     default:
         return NULL;

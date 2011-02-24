@@ -40,6 +40,7 @@ class ActionTypeEnum : public QObject {
          * Enumerated type with supported actions.
          */
         enum ActionType {
+            MOUSE_MOVE,
             RIGHT_BUTTON_CLICK,
             MIDDLE_BUTTON_CLICK,
             MOUSE_WHEEL_UP,
@@ -52,7 +53,9 @@ class ActionTypeEnum : public QObject {
             CHANGE_DESKTOP,
             SEND_KEYS,
             MOVE_WINDOW,
-            RUN_COMMAND
+            RUN_COMMAND,
+            DRAG_AND_DROP,
+            LEFT_BUTTON_CLICK
         };
 
         /**

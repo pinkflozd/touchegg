@@ -31,37 +31,7 @@ void MiddleButtonClick::executeStart(const QHash<QString, QVariant>&) {}
 void MiddleButtonClick::executeFinish(const QHash<QString, QVariant>&) {}
 
 void MiddleButtonClick::executeUpdate(const QHash<QString, QVariant>&) {
-    XEvent event;
-    memset(&event, 0x00, sizeof(event));
-    event.type = ButtonPress;
-    event.xbutton.button = Button2;
-    event.xbutton.same_screen = true;
-
-    XQueryPointer(QX11Info::display(), QX11Info::appRootWindow(),
-        &event.xbutton.root, &event.xbutton.window,
-        &event.xbutton.x_root, &event.xbutton.y_root,
-        &event.xbutton.x, &event.xbutton.y,
-        &event.xbutton.state);
-
-    event.xbutton.subwindow = event.xbutton.window;
-
-    while(event.xbutton.subwindow) {
-        event.xbutton.window = event.xbutton.subwindow;
-        XQueryPointer(QX11Info::display(), event.xbutton.window,
-            &event.xbutton.root, &event.xbutton.subwindow,&event.xbutton.x_root,
-            &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y,
-            &event.xbutton.state);
-    }
-
-    XSendEvent(QX11Info::display(), PointerWindow, True, 0xfff, &event);
-    XFlush(QX11Info::display());
-
-    usleep(100000);
-
-    event.type = ButtonRelease;
-    event.xbutton.state = 0x100;
-
-    XSendEvent(QX11Info::display(), PointerWindow, True, 0xfff, &event);
+    XTestFakeButtonEvent(QX11Info::display(), Button2, true, 0);
+    XTestFakeButtonEvent(QX11Info::display(), Button2, false, 0);
     XFlush(QX11Info::display());
 }
-

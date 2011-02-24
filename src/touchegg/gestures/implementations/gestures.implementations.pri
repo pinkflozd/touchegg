@@ -21,7 +21,10 @@ HEADERS += \
     src/touchegg/gestures/implementations/ThreeFingersTapAndHold.h \
     src/touchegg/gestures/implementations/TwoFingersTapAndHold.h \
     src/touchegg/gestures/implementations/FourFingersTapAndHold.h \
-    src/touchegg/gestures/implementations/FiveFingersTapAndHold.h
+    src/touchegg/gestures/implementations/FiveFingersTapAndHold.h \
+    src/touchegg/gestures/implementations/OneFingerTap.h \
+    src/touchegg/gestures/implementations/OneFingerTapAndHold.h \
+    src/touchegg/gestures/implementations/OneFingerDrag.h
 
 SOURCES += \
     src/touchegg/gestures/implementations/Gesture.cpp \
@@ -45,4 +48,7 @@ SOURCES += \
     src/touchegg/gestures/implementations/ThreeFingersTapAndHold.cpp \
     src/touchegg/gestures/implementations/TwoFingersTapAndHold.cpp \
     src/touchegg/gestures/implementations/FourFingersTapAndHold.cpp \
-    src/touchegg/gestures/implementations/FiveFingersTapAndHold.cpp
+    src/touchegg/gestures/implementations/FiveFingersTapAndHold.cpp \
+    src/touchegg/gestures/implementations/OneFingerTap.cpp \
+    src/touchegg/gestures/implementations/OneFingerTapAndHold.cpp \
+    src/touchegg/gestures/implementations/OneFingerDrag.cpp
