@@ -115,8 +115,8 @@ void GestureCollector::run() {
     //     Cuando se solucione subscribirse SOLO a los gestos que se usen
 
     // Nos subscribimos a los gestos que queremos recibir
-    /*const char* subscribe[] = {
-        GEIS_GESTURE_TYPE_TAP1,
+    const char* subscribe[] = {
+        //GEIS_GESTURE_TYPE_TAP1,
         GEIS_GESTURE_TYPE_TAP2,
         GEIS_GESTURE_TYPE_TAP3,
         GEIS_GESTURE_TYPE_TAP4,
@@ -127,10 +127,10 @@ void GestureCollector::run() {
         GEIS_GESTURE_TYPE_DRAG5,
         GEIS_GESTURE_TYPE_PINCH3,
         NULL
-    };*/
+    };
 
     if(geis_subscribe(geisInstance, GEIS_ALL_INPUT_DEVICES,
-            GEIS_ALL_GESTURES /*subscribe*/, &gestureFuncs, this)
+            /*GEIS_ALL_GESTURES*/ subscribe, &gestureFuncs, this)
             != GEIS_STATUS_SUCCESS)
         qFatal("geis_subscribe: Can't subscribe to gestures");
 

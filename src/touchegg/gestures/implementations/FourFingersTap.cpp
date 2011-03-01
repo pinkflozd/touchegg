@@ -28,11 +28,11 @@ FourFingersTap::FourFingersTap(GestureTypeEnum::GestureType type,
 // ************************************************************************** //
 
 bool FourFingersTap::isThisGesture(const QHash<QString, QVariant>& attrs) {
-    // "gesture name" = "Tap"
-    if(!attrs.contains("gesture name"))
+    // GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME = "Tap"
+    if(!attrs.contains(GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME))
         return false;
 
-    if(attrs.value("gesture name", "") != "Tap")
+    if(attrs.value(GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME, "") != "Tap")
         return false;
 
     // touches = 4

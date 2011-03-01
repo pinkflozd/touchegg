@@ -28,11 +28,11 @@ ThreeFingersPinch::ThreeFingersPinch(GestureTypeEnum::GestureType type,
 // ************************************************************************** //
 
 bool ThreeFingersPinch::isThisGesture(const QHash<QString, QVariant>& attrs) {
-    // "gesture name" = "Pinch"
-    if(!attrs.contains("gesture name"))
+    // GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME = "Pinch"
+    if(!attrs.contains(GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME))
         return false;
 
-    if(attrs.value("gesture name", "") != "Pinch")
+    if(attrs.value(GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME, "") != "Pinch")
         return false;
 
     // touches = 3

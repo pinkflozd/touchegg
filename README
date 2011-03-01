@@ -1,5 +1,5 @@
 1 - Install Touchégg dependences:
-    $ sudo apt-get install build-essential libqt4-dev utouch libx11-6
+    $ sudo apt-get install build-essential libqt4-dev utouch libx11-6 libxtst-dev
 
 2 - Compile and install Touchégg:
     $ qmake
@@ -35,8 +35,5 @@
 7 - Make a gesture, for example drag two fingers over your trackpad. If all
     works fine, the name of the gesture will appear.
 
-8 - To use your own configuration:
-    $ mkdir $HOME/.touchegg
-    $ cp /usr/share/touchegg/touchegg.conf $HOME/.touchegg/touchegg.conf
-
-    And edit it... GUI in progress ;)
+8 - To use your own configuration edit $HOME/.touchegg/touchegg.conf
+    GUI in progress ;)

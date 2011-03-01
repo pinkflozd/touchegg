@@ -28,11 +28,11 @@ OneFingerDrag::OneFingerDrag(GestureTypeEnum::GestureType type,
 // ************************************************************************** //
 
 bool OneFingerDrag::isThisGesture(const QHash<QString, QVariant>& attrs) {
-    // "gesture name" = "Drag"
-    if(!attrs.contains("gesture name"))
+    // GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME = "Drag"
+    if(!attrs.contains(GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME))
         return false;
 
-    if(attrs.value("gesture name", "") != "Drag")
+    if(attrs.value(GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME, "") != "Drag")
         return false;
 
     // touches = 1
