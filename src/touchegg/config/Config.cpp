@@ -75,6 +75,24 @@ Config::Config() {
 // **********                      GET/SET/IS                      ********** //
 // ************************************************************************** //
 
+QStringList Config::getUsedGestures() const {
+    QStringList allGestures = this->settings->childGroups();
+    QStringList usedGestures;
+
+    for(int n=0; n<allGestures.size(); n++) {
+        QString action = ActionTypeEnum::getValue(getAssociatedAction(
+                GestureTypeEnum::getEnum(allGestures.at(n))));
+        if(action != "" && action != "NO_ACTION")
+            usedGestures.append(GestureTypeEnum::getGeisEquivalent(
+                    GestureTypeEnum::getEnum(allGestures.at(n))));
+    }
+
+    usedGestures.removeDuplicates();
+    return usedGestures;
+}
+
+//------------------------------------------------------------------------------
+
 int Config::getTapAndHoldTime() const {
     return this->settings->value(TAP_AND_HOLD_TIME).toInt();
 }

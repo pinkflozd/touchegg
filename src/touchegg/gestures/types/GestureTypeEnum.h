@@ -40,19 +40,19 @@ class GestureTypeEnum : public QObject {
          * Enumerated type with supported gestures.
          */
         enum GestureType {
-			// TAP
+            // TAP
             TWO_FINGERS_TAP,
             THREE_FINGERS_TAP,
             FOUR_FINGERS_TAP,
             FIVE_FINGERS_TAP,
 
-			// PINCH
-			TWO_FINGERS_PINCH,
+            // PINCH
+            TWO_FINGERS_PINCH,
             THREE_FINGERS_PINCH,
-			FOUR_FINGERS_PINCH,
-			FIVE_FINGERS_PINCH,
+            FOUR_FINGERS_PINCH,
+            FIVE_FINGERS_PINCH,
 
-			// DRAG
+            // DRAG
             TWO_FINGERS_DRAG_UP,
             TWO_FINGERS_DRAG_DOWN,
             TWO_FINGERS_DRAG_LEFT,
@@ -67,8 +67,8 @@ class GestureTypeEnum : public QObject {
             FOUR_FINGERS_DRAG_DOWN,
             FOUR_FINGERS_DRAG_LEFT,
             FOUR_FINGERS_DRAG_RIGHT,
-			
-			FIVE_FINGERS_DRAG_UP,
+
+            FIVE_FINGERS_DRAG_UP,
             FIVE_FINGERS_DRAG_DOWN,
             FIVE_FINGERS_DRAG_LEFT,
             FIVE_FINGERS_DRAG_RIGHT,
@@ -101,6 +101,26 @@ class GestureTypeEnum : public QObject {
          * @return The enum type.
          */
         static GestureType getEnum(const QString& gtString);
+
+        /**
+         * @~spanish
+         * Devuelve una lista con los gestos de uTouch-GEIS equivalentes al
+         * gesto indicado, si no tiene devuelve una lista vacía.
+         * Por ejemplo, el equivalente de TWO_FINGERS_TAP_AND_HOLD es
+         * {GEIS_GESTURE_TYPE_TAP2, GEIS_GESTURE_TYPE_DRAG2}.
+         * @param  gt El gesto.
+         * @return Su equivalente.
+         *
+         * @~english
+         * Returns a list with the equivalents uTouch-GEIS gestures to the
+         * indicated gesture, if it doesn't have equivalent, returns an empty
+         * list.
+         * For example, the equivalent of TWO_FINGERS_TAP_AND_HOLD is
+         * {GEIS_GESTURE_TYPE_TAP2, GEIS_GESTURE_TYPE_DRAG2}.
+         * @param  gt The gesture.
+         * @return The equivalent.
+         */
+        static QStringList getGeisEquivalent(GestureType gt);
 
 };
 

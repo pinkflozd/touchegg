@@ -94,7 +94,7 @@ void GestureHandler::executeGestureStart(GeisGestureType type,
 
         // El nuevo gesto debe ser un drag con igual número de dedos que el tap
         // en ejecución para que se considere un tap&hold
-        if(type == GEIS_GESTURE_DRAG
+        if(type == GEIS_GESTURE_PRIMITIVE_DRAG
                 && attrs.contains("touches")
                 && this->currentGesture->getAttrs().contains("touches")
                 && attrs.value("touches", -1)

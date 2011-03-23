@@ -70,6 +70,7 @@ QHash<QString, QVariant> GestureCollector::getGestureAttrs(GeisSize numAttrs,
         case GEIS_ATTR_TYPE_STRING:
             value = attrs[n].string_val;
             break;
+        case GEIS_ATTR_TYPE_POINTER:
         case GEIS_ATTR_TYPE_UNKNOWN:
             break;
         }
@@ -89,7 +90,7 @@ void GestureCollector::run() {
     GeisXcbWinInfo xcbWinInfo;
     xcbWinInfo.display_name = NULL;
     xcbWinInfo.screenp      = NULL;
-    xcbWinInfo.window_id    = QX11Info::appRootWindow(); // Todos los gestos
+    xcbWinInfo.window_id    = QX11Info::appRootWindow(); // All gestures
 
     GeisWinInfo  winInfo;
     winInfo.win_type = GEIS_XCB_FULL_WINDOW;
@@ -109,30 +110,36 @@ void GestureCollector::run() {
     gestureFuncs.update  = GestureCollector::gestureUpdate;
     gestureFuncs.finish  = GestureCollector::gestureFinish;
 
-    //TODO No se puede obtener GEIS_GESTURE_TYPE_DRAG1 sin seleccionar
-    //     GEIS_ALL_GESTURES, bug reportado:
-    //     https://bugs.launchpad.net/utouch-geis/+bug/723304
-    //     Cuando se solucione subscribirse SOLO a los gestos que se usen
+    // Nos suscribimos solo a los gestos que se vayan a usar
+    Config* cfg = Config::getInstance();
+    QStringList subscribeList = cfg->getUsedGestures();
+    char** subscribe = new char*[subscribeList.size() + 1];
 
-    // Nos subscribimos a los gestos que queremos recibir
-    const char* subscribe[] = {
-        //GEIS_GESTURE_TYPE_TAP1,
-        GEIS_GESTURE_TYPE_TAP2,
-        GEIS_GESTURE_TYPE_TAP3,
-        GEIS_GESTURE_TYPE_TAP4,
-        GEIS_GESTURE_TYPE_TAP5,
-        GEIS_GESTURE_TYPE_DRAG2,
-        GEIS_GESTURE_TYPE_DRAG3,
-        GEIS_GESTURE_TYPE_DRAG4,
-        GEIS_GESTURE_TYPE_DRAG5,
-        GEIS_GESTURE_TYPE_PINCH3,
-        NULL
-    };
+    // Pasamos de QStringList a char**
+    for (int i = 0; i < subscribeList.size(); i++) {
+        subscribe[i] = new char[
+                strlen(subscribeList.at(i).toStdString().c_str())+1];
+        memcpy(subscribe[i], subscribeList.at(i).toStdString().c_str(),
+                strlen(subscribeList.at(i).toStdString().c_str())+1);
+    }
+    subscribe[subscribeList.size()] = ((char)NULL);
+
 
     if(geis_subscribe(geisInstance, GEIS_ALL_INPUT_DEVICES,
-            /*GEIS_ALL_GESTURES*/ subscribe, &gestureFuncs, this)
+            (const char**)subscribe, &gestureFuncs, this)
             != GEIS_STATUS_SUCCESS)
         qFatal("geis_subscribe: Can't subscribe to gestures");
+
+
+    // Liberamos el char**
+    int i = 0;
+    while (subscribe[i]) {
+        delete subscribe[i];
+        i++;
+    }
+    delete subscribe;
+
+
 
     // Thanks to the geistest developer for this code
     int fd = -1;

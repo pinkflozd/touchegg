@@ -16,6 +16,7 @@
 #define GESTURECOLLECTOR_H
 
 #include "src/touchegg/util/Include.h"
+#include "src/touchegg/config/Config.h"
 
 /**
  * @~spanish

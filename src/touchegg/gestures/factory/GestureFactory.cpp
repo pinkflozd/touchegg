@@ -196,4 +196,6 @@ Gesture* GestureFactory::createTapAndHold(GeisGestureType /*type*/,
 	if(type == GEIS_GESTURE_TYPE_DRAG5)
 		return new Gesture(GestureTypeEnum::FIVE_FINGERS_TAP_AND_HOLD,
 			id, attrs);
+
+        return NULL;
 }

@@ -15,42 +15,9 @@
 #ifndef GESTUREFACTORY_H
 #define GESTUREFACTORY_H
 
-
 #include "src/touchegg/util/Include.h"
 #include "src/touchegg/gestures/types/GestureTypeEnum.h"
-#include "src/touchegg/actions/factory/ActionFactory.h"
-#include "src/touchegg/gestures/implementations/Gesture.h"
-
-#include "src/touchegg/gestures/implementations/OneFingerTap.h"
-#include "src/touchegg/gestures/implementations/TwoFingersTap.h"
-#include "src/touchegg/gestures/implementations/ThreeFingersTap.h"
-#include "src/touchegg/gestures/implementations/FourFingersTap.h"
-#include "src/touchegg/gestures/implementations/FiveFingersTap.h"
-
-#include "src/touchegg/gestures/implementations/ThreeFingersPinch.h"
-
-#include "src/touchegg/gestures/implementations/OneFingerDrag.h"
-
-#include "src/touchegg/gestures/implementations/TwoFingersDragUp.h"
-#include "src/touchegg/gestures/implementations/TwoFingersDragDown.h"
-#include "src/touchegg/gestures/implementations/TwoFingersDragLeft.h"
-#include "src/touchegg/gestures/implementations/TwoFingersDragRight.h"
-
-#include "src/touchegg/gestures/implementations/ThreeFingersDragUp.h"
-#include "src/touchegg/gestures/implementations/ThreeFingersDragDown.h"
-#include "src/touchegg/gestures/implementations/ThreeFingersDragLeft.h"
-#include "src/touchegg/gestures/implementations/ThreeFingersDragRight.h"
-
-#include "src/touchegg/gestures/implementations/FourFingersDragUp.h"
-#include "src/touchegg/gestures/implementations/FourFingersDragDown.h"
-#include "src/touchegg/gestures/implementations/FourFingersDragLeft.h"
-#include "src/touchegg/gestures/implementations/FourFingersDragRight.h"
-
-#include "src/touchegg/gestures/implementations/OneFingerTapAndHold.h"
-#include "src/touchegg/gestures/implementations/TwoFingersTapAndHold.h"
-#include "src/touchegg/gestures/implementations/ThreeFingersTapAndHold.h"
-#include "src/touchegg/gestures/implementations/FourFingersTapAndHold.h"
-#include "src/touchegg/gestures/implementations/FiveFingersTapAndHold.h"
+#include "src/touchegg/gestures/implementation/Gesture.h"
 
 /**
  * @~spanish

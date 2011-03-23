@@ -30,7 +30,7 @@ class Config {
 
     private:
 
-        // Constantes para acceder a la configuración
+        // Constants to access to the settings
         static const char* USR_SHARE_CONFIG_FILE;
         static const char* HOME_CONFIG_FILE; // Sumarle el $HOME por delante
         static const char* HOME_CONFIG_DIR;
@@ -84,6 +84,19 @@ class Config {
          * (Re)Load configuration.
          */
         static void loadConfig();
+
+        //----------------------------------------------------------------------
+
+        /**
+         * @~spanish
+         * Devuelve una lista de todos los gestos con una acción asociada.
+         * @return Dicha lista.
+         *
+         * @~english
+         * Returns a list with all gestures with an associate action.
+         * @return The list.
+         */
+        QStringList getUsedGestures() const;
 
         //----------------------------------------------------------------------
 
