@@ -24,48 +24,135 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-Touchegg::Touchegg()
-    : gestureCollector(new GestureCollector),
-    gestureHandler(new GestureHandler)
+Touchegg::Touchegg(int argc, char** argv)
+        : QApplication(argc, argv),
+          gestureCollector(new GestureCollector),
+          gestureHandler(new GestureHandler)
 {
 
 }
 
 Touchegg::~Touchegg()
 {
-    if(this->gestureCollector->isRunning())
-        this->gestureCollector->exit();
-
     delete this->gestureCollector;
     delete this->gestureHandler;
 }
 
 
 // ************************************************************************** //
-// **********                    PUBLIC METHODS                    ********** //
+// **********                     PUBLIC SLOTS                     ********** //
 // ************************************************************************** //
 
 void Touchegg::start()
 {
-    // Conectamos GestureHandler con GestureHandler para que el último trate los
-    // eventos que recoge el primero.
-    qRegisterMetaType<GeisGestureType>("GeisGestureType");
-    qRegisterMetaType<GeisGestureId>("GeisGestureId");
-
+    // Conectamos el GestureCollector con el GestureHandler para que el último
+    // trate los eventos que recoge el primero
     connect(gestureCollector, SIGNAL(executeGestureStart(
-            GeisGestureType,GeisGestureId,QHash<QString,QVariant>)),
+            QString,int,QHash<QString,QVariant>)),
             gestureHandler, SLOT(executeGestureStart(
-            GeisGestureType,GeisGestureId,QHash<QString,QVariant>)));
+            QString,int,QHash<QString,QVariant>)));
     connect(gestureCollector, SIGNAL(executeGestureUpdate(
-            GeisGestureType,GeisGestureId,QHash<QString,QVariant>)),
+            QString,int,QHash<QString,QVariant>)),
             gestureHandler, SLOT(executeGestureUpdate(
-            GeisGestureType,GeisGestureId,QHash<QString,QVariant>)));
+            QString,int,QHash<QString,QVariant>)));
     connect(gestureCollector, SIGNAL(executeGestureFinish(
-            GeisGestureType,GeisGestureId,QHash<QString,QVariant>)),
+            QString,int,QHash<QString,QVariant>)),
             gestureHandler, SLOT(executeGestureFinish(
-            GeisGestureType,GeisGestureId,QHash<QString,QVariant>)));
+            QString,int,QHash<QString,QVariant>)));
+
+    // Obtenemos la lista actual de ventanas para suscribirnos a ellas
+    this->clientList = this->getClientList();
+
+    foreach(Window w, this->clientList) {
+        this->gestureCollector->addWindow(w);
+    }
+
+    // Nos suscribimos a los gestos globales
+    this->gestureCollector->addWindow(QX11Info::appRootWindow());
 
     // Lanzamos GestureHandler en un hilo aparte para no congelar el bucle de
     // eventos de Qt
     this->gestureCollector->start();
+
+    // Hacemos que Touchégg reciba la creación o destrucción de ventanas
+    XSelectInput(QX11Info::display(), QX11Info::appRootWindow(
+            QX11Info::appScreen()), PropertyChangeMask);
+    XFlush(QX11Info::display());
+}
+
+
+// ************************************************************************** //
+// **********                   PROTECTED METHODS                  ********** //
+// ************************************************************************** //
+
+bool Touchegg::x11EventFilter(XEvent* event)
+{
+    if(event->type == PropertyNotify && event->xproperty.atom == XInternAtom(
+            QX11Info::display(), "_NET_CLIENT_LIST", false)) {
+        bool isNew;
+        QList<Window> oldList = this->clientList;
+        this->clientList = this->getClientList();
+
+        Window w = this->getDifferentWindow(this->clientList, oldList, &isNew);
+
+        if(w != None) {
+            if(isNew)
+                this->gestureCollector->addWindow(w);
+            else
+                this->gestureCollector->removeWindow(w);
+        }
+
+    }
+    return false;
+}
+
+
+// ************************************************************************** //
+// **********                   PRIVATE METHODS                    ********** //
+// ************************************************************************** //
+
+QList<Window> Touchegg::getClientList() const
+{
+    Atom atomRet;
+    int size;
+    unsigned long numItems, bytesAfterReturn;
+    unsigned char* propRet;
+    long offset = 0;
+    long offsetSize = 100;
+    int status;
+    Atom atomList = XInternAtom(QX11Info::display(), "_NET_CLIENT_LIST", false);
+    QList<Window> ret;
+
+    do {
+        status = XGetWindowProperty(QX11Info::display(),
+                QX11Info::appRootWindow(), atomList, offset, offsetSize, false,
+                XA_WINDOW, &atomRet,&size,&numItems,&bytesAfterReturn,&propRet);
+
+        if(status == Success) {
+            Window* aux = (Window*)propRet;
+            unsigned int n=0;
+            while(n < numItems) {
+                ret.append(aux[n]);
+                n++;
+            }
+            offset += offsetSize;
+            XFree(propRet);
+        }
+    } while(status == Success && bytesAfterReturn != 0);
+
+    return ret;
+}
+
+Window Touchegg::getDifferentWindow(QList<Window> lnew, QList<Window> lold,
+        bool* isNew) const
+{
+    if(lnew == lold) {
+        return None;
+    } else {
+        // Como _NET_CLIENT_LIST lleva un orden de primero las ventanas viejas y
+        // luego las nuevas, nos basta con devolver la última ventana de la
+        // lista más larga
+        *isNew = lnew.length() > lold.length();
+        return lnew.length() > lold.length() ? lnew.last() : lold.last();
+    }
 }

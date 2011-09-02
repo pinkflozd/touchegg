@@ -211,16 +211,7 @@ void Config::initConfig(QFile& file)
                         QString gesture = gestureElem.attribute("type");
                         int fingers = gestureElem.attribute("fingers").toInt();
 
-                        if(this->usedGestures.contains(app)) {
-                            QStringList aux = this->usedGestures.value(app);
-                            aux.append(GestureTypeEnum::getGeisEquivalent(
-                                    GestureTypeEnum::getEnum(gesture),fingers));
-                            this->usedGestures.insert(app, aux);
-                        } else {
-                            this->usedGestures.insert(app,
-                                    GestureTypeEnum::getGeisEquivalent(
-                                    GestureTypeEnum::getEnum(gesture),fingers));
-                        }
+                        this->saveUsedGestures(app, gesture, fingers);
                     }
                 }
             }
@@ -229,16 +220,46 @@ void Config::initConfig(QFile& file)
     }
 }
 
+void Config::saveUsedGestures(const QString &app, const QString &gestureType,
+        int numFingers)
+{
+
+    if(this->usedGestures.contains(app)) {
+        QList< QPair<QStringList, int> > aux = this->usedGestures.value(app);
+        QStringList gestures = GestureTypeEnum::getGeisEquivalent(
+                GestureTypeEnum::getEnum(gestureType));
+
+        QPair<QStringList, int> pair;
+        pair.first = gestures;
+        pair.second = numFingers;
+
+        aux.append(pair);
+        this->usedGestures.insert(app, aux);
+
+    } else {
+        QList< QPair<QStringList, int> > aux;
+        QStringList gestures = GestureTypeEnum::getGeisEquivalent(
+                GestureTypeEnum::getEnum(gestureType));
+
+        QPair<QStringList, int> pair;
+        pair.first = gestures;
+        pair.second = numFingers;
+
+        aux.append(pair);
+        this->usedGestures.insert(app, aux);
+    }
+}
+
 
 // ************************************************************************** //
 // **********                      GET/SET/IS                      ********** //
 // ************************************************************************** //
 
-QStringList Config::getUsedGestures(const QString& application) const
+QList< QPair<QStringList, int> >  Config::getUsedGestures(
+        const QString& application) const
 {
-    QStringList ret = this->usedGestures.value(application);
-    ret.removeDuplicates();
-    return ret;
+    QList< QPair<QStringList, int> > r = this->usedGestures.value(application);
+    return r;
 }
 
 //------------------------------------------------------------------------------

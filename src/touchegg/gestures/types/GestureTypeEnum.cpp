@@ -41,103 +41,27 @@ GestureTypeEnum::GestureType GestureTypeEnum::getEnum(const QString& gtString)
             gtString.toStdString().c_str());
 }
 
-QStringList GestureTypeEnum::getGeisEquivalent(GestureType gt, int numFingers)
+QStringList GestureTypeEnum::getGeisEquivalent(GestureType gt)
 {
     switch(gt) {
 
-    case TAP: {
-        switch (numFingers) {
-        case 2:
-            return QStringList(GEIS_GESTURE_TYPE_TAP2);
-        case 3:
-            return QStringList(GEIS_GESTURE_TYPE_TAP3);
-        case 4:
-            return QStringList(GEIS_GESTURE_TYPE_TAP4);
-        case 5:
-            return QStringList(GEIS_GESTURE_TYPE_TAP5);
-        default:
-            return QStringList();
-        }
-    }
+    case TAP:
+        return QStringList(GEIS_GESTURE_TAP);
 
-    case DRAG: {
-        switch (numFingers) {
-        case 2:
-            return QStringList(GEIS_GESTURE_TYPE_DRAG2);
-        case 3:
-            return QStringList(GEIS_GESTURE_TYPE_DRAG3);
-        case 4:
-            return QStringList(GEIS_GESTURE_TYPE_DRAG4);
-        case 5:
-            return QStringList(GEIS_GESTURE_TYPE_DRAG5);
-        default:
-            return QStringList();
-        }
-    }
+    case DRAG:
+        return QStringList(GEIS_GESTURE_DRAG);
 
-    case PINCH: {
-        switch (numFingers) {
-        case 2:
-            return QStringList(GEIS_GESTURE_TYPE_PINCH2);
-        case 3:
-            return QStringList(GEIS_GESTURE_TYPE_PINCH3);
-        case 4:
-            return QStringList(GEIS_GESTURE_TYPE_PINCH4);
-        case 5:
-            return QStringList(GEIS_GESTURE_TYPE_PINCH5);
-        default:
-            return QStringList();
-        }
-    }
+    case PINCH:
+        return QStringList(GEIS_GESTURE_PINCH);
 
-    case ROTATE: {
-        switch (numFingers) {
-        case 2:
-            return QStringList(GEIS_GESTURE_TYPE_ROTATE2);
-        case 3:
-            return QStringList(GEIS_GESTURE_TYPE_ROTATE3);
-        case 4:
-            return QStringList(GEIS_GESTURE_TYPE_ROTATE4);
-        case 5:
-            return QStringList(GEIS_GESTURE_TYPE_ROTATE5);
-        default:
-            return QStringList();
-        }
-    }
+    case ROTATE:
+        return QStringList(GEIS_GESTURE_ROTATE);
 
-    case TAP_AND_HOLD: {
-        switch (numFingers) {
-        case 2:
-            return QStringList() << GEIS_GESTURE_TYPE_TAP2
-                                 << GEIS_GESTURE_TYPE_DRAG2;
-        case 3:
-            return QStringList() << GEIS_GESTURE_TYPE_TAP3
-                                 << GEIS_GESTURE_TYPE_DRAG3;
-        case 4:
-            return QStringList() << GEIS_GESTURE_TYPE_TAP4
-                                 << GEIS_GESTURE_TYPE_DRAG4;
-        case 5:
-            return QStringList() << GEIS_GESTURE_TYPE_TAP5
-                                 << GEIS_GESTURE_TYPE_DRAG5;
-        default:
-            return QStringList();
-        }
-    }
+    case TAP_AND_HOLD:
+        return QStringList() << GEIS_GESTURE_TAP << GEIS_GESTURE_DRAG;
 
-    case DOUBLE_TAP: {
-        switch (numFingers) {
-        case 2:
-            return QStringList(GEIS_GESTURE_TYPE_TAP2);
-        case 3:
-            return QStringList(GEIS_GESTURE_TYPE_TAP3);
-        case 4:
-            return QStringList(GEIS_GESTURE_TYPE_TAP4);
-        case 5:
-            return QStringList(GEIS_GESTURE_TYPE_TAP5);
-        default:
-            return QStringList();
-        }
-    }
+    case DOUBLE_TAP:
+        return QStringList(GEIS_GESTURE_TAP);
 
     default:
         return QStringList();

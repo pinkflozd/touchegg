@@ -87,8 +87,8 @@ public:
      *        the attribute.
      * @return The gesture.
      */
-    Gesture* createSimpleGesture(GeisGestureType type, GeisGestureId id,
-    QHash<QString, QVariant> attrs);
+    Gesture* createSimpleGesture(const QString &type, int id,
+            QHash<QString, QVariant> attrs);
 
     /**
      * @~spanish
@@ -113,8 +113,8 @@ public:
      *        the attribute.
      * @return The gesture.
      */
-    Gesture* createComposedGesture(GeisGestureType type, GeisGestureId id,
-    QHash<QString, QVariant> attrs);
+    Gesture* createComposedGesture(const QString &type, int id,
+            QHash<QString, QVariant> attrs);
 };
 
 #endif // GESTUREFACTORY_H

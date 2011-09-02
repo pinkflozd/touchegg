@@ -24,62 +24,51 @@
 // **********             STATIC METHODS AND VARIABLES             ********** //
 // ************************************************************************** //
 
-void GestureCollector::gestureStart(void* cookie, GeisGestureType type,
-        GeisGestureId id, GeisSize numAttrs, GeisGestureAttr* attrs)
+void GestureCollector::gestureStart(GestureCollector *gc, GeisEvent event)
 {
-    GestureCollector* gc = (GestureCollector*)cookie;
-    emit gc->executeGestureStart(type, id, getGestureAttrs(numAttrs, attrs));
+    // type is GEIS_GESTURE_TYPE_TAP1, GEIS_GESTURE_TYPE_PINCH3...
+    QHash<QString, QVariant> attrs = getGestureAttrs(event);
+    QString type = attrs.value(
+            GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME).toString();
+    int id = attrs.value("geis gesture class id").toInt();
+    emit gc->executeGestureStart(type, id, attrs);
 }
 
-void GestureCollector::gestureUpdate(void* cookie, GeisGestureType type,
-        GeisGestureId id, GeisSize numAttrs, GeisGestureAttr* attrs)
+void GestureCollector::gestureUpdate(GestureCollector *gc, GeisEvent event)
 {
-    GestureCollector* gc = (GestureCollector*)cookie;
-    emit gc->executeGestureUpdate(type, id, getGestureAttrs(numAttrs, attrs));
+    QHash<QString, QVariant> attrs = getGestureAttrs(event);
+    QString type = attrs.value(
+            GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME).toString();
+    int id = attrs.value("geis gesture class id").toInt();
+    emit gc->executeGestureUpdate(type, id, attrs);
 }
 
-void GestureCollector::gestureFinish(void* cookie, GeisGestureType type,
-        GeisGestureId id, GeisSize numAttrs, GeisGestureAttr* attrs)
+void GestureCollector::gestureFinish(GestureCollector *gc, GeisEvent event)
 {
-    GestureCollector* gc = (GestureCollector*)cookie;
-    emit gc->executeGestureFinish(type, id, getGestureAttrs(numAttrs, attrs));
+    QHash<QString, QVariant> attrs = getGestureAttrs(event);
+    QString type = attrs.value(
+            GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME).toString();
+    int id = attrs.value("geis gesture class id").toInt();
+    emit gc->executeGestureFinish(type, id, attrs);
 }
 
 
 // ************************************************************************** //
-// **********                    PRIVATE METHODS                   ********** //
+// **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-QHash<QString, QVariant> GestureCollector::getGestureAttrs(GeisSize numAttrs,
-        GeisGestureAttr* attrs)
+GestureCollector::GestureCollector()
 {
-    QHash<QString, QVariant> ret;
+    /* La instancia de GEIS es única, por lo que se puede tener un único bucle
+     * para recoger los gestos en run(). Con GEIS v2.0 se pueden añadir
+     * subcripciones a dicha instancia para escuchar en diferentes ventanas.
+     */
+    this->geis = geis_new(GEIS_INIT_TRACK_DEVICES, NULL);
+}
 
-    for(unsigned int n=0; n<numAttrs; n++) {
-        QVariant value;
-
-        switch (attrs[n].type) {
-        case GEIS_ATTR_TYPE_BOOLEAN:
-            value = attrs[n].boolean_val;
-            break;
-        case GEIS_ATTR_TYPE_FLOAT:
-            value = attrs[n].float_val;
-            break;
-        case GEIS_ATTR_TYPE_INTEGER:
-            value = attrs[n].integer_val;
-            break;
-        case GEIS_ATTR_TYPE_STRING:
-            value = attrs[n].string_val;
-            break;
-        case GEIS_ATTR_TYPE_POINTER:
-        case GEIS_ATTR_TYPE_UNKNOWN:
-            break;
-        }
-
-        ret.insert(attrs[n].name, value);
-    }
-
-    return ret;
+GestureCollector::~GestureCollector()
+{
+    geis_delete(this->geis);
 }
 
 
@@ -89,97 +78,188 @@ QHash<QString, QVariant> GestureCollector::getGestureAttrs(GeisSize numAttrs,
 
 void GestureCollector::run()
 {
-    GeisXcbWinInfo xcbWinInfo;
-    xcbWinInfo.display_name = NULL;
-    xcbWinInfo.screenp      = NULL;
-    xcbWinInfo.window_id    = QX11Info::appRootWindow(); // All gestures
+    int fd;
+    GeisStatus status;
 
-    GeisWinInfo  winInfo;
-    winInfo.win_type = GEIS_XCB_FULL_WINDOW;
-    winInfo.win_info = &xcbWinInfo;
+    geis_get_configuration(this->geis, GEIS_CONFIGURATION_FD, &fd);
 
-    // Inicializamos geis
-    GeisInstance geisInstance;
-    if(geis_init(&winInfo, &geisInstance) != GEIS_STATUS_SUCCESS) {
-        qFatal("geis_init: Can't initialize utouch-geis");
-    }
-
-    // Establecemos las funciones de callback
-    GeisGestureFuncs gestureFuncs;
-    gestureFuncs.start   = GestureCollector::gestureStart;
-    gestureFuncs.update  = GestureCollector::gestureUpdate;
-    gestureFuncs.finish  = GestureCollector::gestureFinish;
-
-    // Nos suscribimos solo a los gestos que se vayan a usar
-
-    // TODO Cuando esté incorporado el mecanismo para escuchar a los gestos
-    //      globales en la root window y a los específicos en la ventana de cada
-    //      aplicación sustituir el código entre llaves por las dos líneas
-    //      comentadas
-
-    //Config* cfg = Config::getInstance();
-    //QStringList subscribeList = cfg->getUsedGestures("All");
-
-    // {
-    QStringList subscribeList;
-    subscribeList.append(GEIS_GESTURE_TYPE_TAP2);
-    subscribeList.append(GEIS_GESTURE_TYPE_TAP3);
-    subscribeList.append(GEIS_GESTURE_TYPE_TAP4);
-    subscribeList.append(GEIS_GESTURE_TYPE_TAP5);
-    subscribeList.append(GEIS_GESTURE_TYPE_DRAG2);
-    subscribeList.append(GEIS_GESTURE_TYPE_DRAG3);
-    subscribeList.append(GEIS_GESTURE_TYPE_DRAG4);
-    subscribeList.append(GEIS_GESTURE_TYPE_DRAG5);
-    subscribeList.append(GEIS_GESTURE_TYPE_PINCH2);
-    subscribeList.append(GEIS_GESTURE_TYPE_PINCH3);
-    subscribeList.append(GEIS_GESTURE_TYPE_PINCH4);
-    subscribeList.append(GEIS_GESTURE_TYPE_PINCH5);
-    // }
-
-
-    if(subscribeList.length() == 0)
-        qFatal("Exiting, no gestures added to the configuration");
-    char** subscribe = new char*[subscribeList.size() + 1];
-
-    // Pasamos de QStringList a char**
-    for (int i = 0; i < subscribeList.size(); i++) {
-        subscribe[i] = new char[
-                strlen(subscribeList.at(i).toStdString().c_str())+1];
-        memcpy(subscribe[i], subscribeList.at(i).toStdString().c_str(),
-                strlen(subscribeList.at(i).toStdString().c_str())+1);
-    }
-    subscribe[subscribeList.size()] = ((char)NULL);
-
-    if(geis_subscribe(geisInstance, GEIS_ALL_INPUT_DEVICES,
-            (const char**)subscribe, &gestureFuncs, this)
-            != GEIS_STATUS_SUCCESS)
-        qFatal("geis_subscribe: Can't subscribe to gestures");
-
-
-    // Liberamos el char**
-    int i = 0;
-    while (subscribe[i]) {
-        delete subscribe[i];
-        i++;
-    }
-    delete subscribe;
-
-    // Obtenemos los gestos
-    int fd = -1;
-    geis_configuration_get_value(geisInstance, GEIS_CONFIG_UNIX_FD, &fd);
-
-    fd_set read_fds;
-    for(;;) {
+    for (;;) {
+        fd_set read_fds;
         FD_ZERO(&read_fds);
+        FD_SET(0, &read_fds);
         FD_SET(fd, &read_fds);
         int sstat = select(fd+1, &read_fds, NULL, NULL, NULL);
 
-        if (sstat < 0)
-            qFatal("Error");
+        if (sstat < 0) {
+            qFatal("ERROR");
+            break;
+        }
 
-        if (FD_ISSET(fd, &read_fds))
-          geis_event_dispatch(geisInstance);
+        if (FD_ISSET(fd, &read_fds)) {
+            GeisEvent event;
+            status = geis_dispatch_events(this->geis);
+            status = geis_next_event(this->geis, &event);
+            while (status == GEIS_STATUS_CONTINUE
+                    || status == GEIS_STATUS_SUCCESS) {
+                switch (geis_event_type(event)) {
+                case GEIS_EVENT_GESTURE_BEGIN:
+                    GestureCollector::gestureStart(this, event);
+                    break;
+                case GEIS_EVENT_GESTURE_UPDATE:
+                    GestureCollector::gestureUpdate(this, event);
+                    break;
+                case GEIS_EVENT_GESTURE_END:
+                    GestureCollector::gestureFinish(this, event);
+                    break;
+                default:
+                    break;
+                }
+                geis_event_delete(event);
+                status = geis_next_event(this->geis, &event);
+            }
+        }
+
+        if (FD_ISSET(0, &read_fds))
+            break;
+    }
+}
+
+
+// ************************************************************************** //
+// **********                    PUBLIC METHODS                    ********** //
+// ************************************************************************** //
+
+void GestureCollector::addWindow(Window w)
+{
+    // Si no hay que escuchar por ningún gesto en la ventana indicada salimos
+    Config* cfg = Config::getInstance();
+
+    QList< QPair<QStringList, int> > subscribeList;
+    if (w == QX11Info::appRootWindow())
+        subscribeList = cfg->getUsedGestures("All");
+    else
+        subscribeList = cfg->getUsedGestures(this->getWindowClass(w));
+
+    if (subscribeList.length() == 0)
+        return;
+
+    // Nos suscribimos solo a los gestos que nos interesan
+    for (int n=0; n<subscribeList.length(); n++) {
+        QPair<QStringList, int> aux = subscribeList.at(n);
+        int numFingers = aux.second;
+
+        foreach (QString gesture, aux.first) {
+            // Creamos el filtro
+            GeisFilter filter = geis_filter_new(this->geis, "filter");
+
+            geis_filter_add_term(filter,
+                    GEIS_FILTER_CLASS,
+                    GEIS_GESTURE_ATTRIBUTE_TOUCHES, GEIS_FILTER_OP_EQ,
+                            numFingers,
+                    GEIS_CLASS_ATTRIBUTE_NAME, GEIS_FILTER_OP_EQ,
+                            gesture.toStdString().c_str(),
+                    NULL);
+
+            // Escuchamos en la ventana indicada
+            geis_filter_add_term(filter, GEIS_FILTER_REGION,
+                    GEIS_REGION_ATTRIBUTE_WINDOWID, GEIS_FILTER_OP_EQ, w);
+
+            // Creamos la subcripción, le añadimos el filtro y la activamos
+            GeisSubscription subscription = geis_subscription_new(
+                    this->geis, "subscription", GEIS_SUBSCRIPTION_CONT);
+            geis_subscription_add_filter(subscription, filter);
+            geis_subscription_activate(subscription);
+
+            // Guardamos la subcripción y el filtro para poder liberarlos
+            QList<GeisSubscription> auxSubs;
+            QList<GeisFilter>       auxFilters;
+            if (this->subscriptions.contains(w)) {
+                auxSubs = this->subscriptions.value(w);
+                auxFilters = this->filters.value(w);
+            }
+
+            auxSubs.append(subscription);
+            auxFilters.append(filter);
+
+            this->subscriptions.insert(w, auxSubs);
+            this->filters.insert(w, auxFilters);
+        }
+    }
+}
+
+void GestureCollector::removeWindow(Window w)
+{
+    QList<GeisSubscription> auxSubs    = this->subscriptions.value(w);
+    QList<GeisFilter>       auxFilters = this->filters.value(w);
+
+    for (int n=0; n<auxSubs.length(); n++) {
+        GeisSubscription sub    = auxSubs.at(n);
+        GeisFilter       filter = auxFilters.at(n);
+
+        geis_filter_delete(filter);
+        geis_subscription_delete(sub);
+    }
+}
+
+
+// ************************************************************************** //
+// **********                    PRIVATE METHODS                   ********** //
+// ************************************************************************** //
+
+QHash<QString, QVariant> GestureCollector::getGestureAttrs(GeisEvent event)
+{
+    QHash<QString, QVariant> ret;
+
+    GeisAttr attr = geis_event_attr_by_name(event, GEIS_EVENT_ATTRIBUTE_GROUPSET);
+    GeisGroupSet groupset = (GeisGroupSet)geis_attr_value_to_pointer(attr);
+
+    for (GeisSize i= 0; i < geis_groupset_group_count(groupset); ++i) {
+        GeisSize j;
+        GeisGroup group = geis_groupset_group(groupset, i);
+
+        for (j=0; j < geis_group_frame_count(group); ++j) {
+            GeisSize k;
+            GeisFrame frame = geis_group_frame(group, j);
+            GeisSize attr_count = geis_frame_attr_count(frame);
+
+            for (k = 0; k < attr_count; ++k) {
+                GeisAttr gestureAttr = geis_frame_attr(frame, k);
+                QString attrName = geis_attr_name(gestureAttr);
+                QVariant value;
+
+                switch (geis_attr_type(gestureAttr)) {
+                case GEIS_ATTR_TYPE_BOOLEAN:
+                    value = geis_attr_value_to_boolean(gestureAttr);
+                    break;
+                case GEIS_ATTR_TYPE_FLOAT:
+                    value = geis_attr_value_to_float(gestureAttr);
+                    break;
+                case GEIS_ATTR_TYPE_INTEGER:
+                    value = geis_attr_value_to_integer(gestureAttr);
+                    break;
+                case GEIS_ATTR_TYPE_STRING:
+                    value = geis_attr_value_to_string(gestureAttr);
+                    break;
+                default:
+                    break;
+                }
+
+                if (!value.isNull()) {
+                    ret.insert(attrName, value);
+                }
+            }
+        }
     }
 
-    geis_finish(geisInstance);
+    return ret;
+}
+
+QString GestureCollector::getWindowClass(Window window) const
+{
+    XClassHint* classHint = XAllocClassHint();
+    XGetClassHint(QX11Info::display(), window, classHint);
+    QString ret = classHint->res_class;
+    XFree(classHint->res_class);
+    XFree(classHint->res_name);
+    return ret;
 }

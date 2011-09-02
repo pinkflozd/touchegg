@@ -1,4 +1,7 @@
-[+] Current Code:
+[+] Touchégg v1.0 (2011/09/02)
+ - Now Touchégg subscribe to gestures in their own window, to not conflict with
+   applications that uses their own gestures
+ - Touchégg ported to GEIS v2 API
  - Touchégg now uses a XML configuration file more intuitive, easy and cleaned
    and some action configurations has been enchancement.
  - The code is adapted to the Qt/KDE coding style

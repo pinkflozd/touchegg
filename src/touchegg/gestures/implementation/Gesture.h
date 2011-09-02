@@ -72,7 +72,7 @@ private:
      * @~english
      * Gesture ID.
      */
-    GeisGestureId id;
+    int id;
 
     /**
      * @~spanish
@@ -120,7 +120,7 @@ public:
      *        the attribute.
      */
     Gesture(GestureTypeEnum::GestureType type, int numFingers,
-        GestureDirectionEnum::GestureDirection dir, GeisGestureId id,
+        GestureDirectionEnum::GestureDirection dir, int id,
         const QHash<QString, QVariant>& attrs);
 
     /**
@@ -205,7 +205,7 @@ public:
      * Returns the gesture ID.
      * @return The ID.
      */
-    GeisGestureId getId() const;
+    int getId() const;
 
     /**
      * @~spanish
@@ -273,7 +273,7 @@ public:
      * Sets the gesture ID.
      * @param id The ID.
      */
-    void setId(GeisGestureId id);
+    void setId(int id);
 
     /**
      * @~spanish

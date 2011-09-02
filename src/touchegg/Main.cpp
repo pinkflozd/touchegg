@@ -33,8 +33,7 @@
  */
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
-    Touchegg touchegg;
-    touchegg.start();
-    return app.exec();
+    Touchegg touchegg(argc, argv);
+    QTimer::singleShot(0, &touchegg, SLOT(start()));
+    return touchegg.exec();
 }

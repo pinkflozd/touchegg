@@ -80,8 +80,8 @@ public:
      * @~spanish
      * Devuelve una lista con los gestos de uTouch-GEIS equivalentes al
      * gesto indicado, si no tiene un equivalente, devuelve una lista vacía.
-     * Por ejemplo, el equivalente de un gesto tap_and_hold con 2 dedos es
-     * {GEIS_GESTURE_TYPE_TAP2, GEIS_GESTURE_TYPE_DRAG2}.
+     * Por ejemplo, el equivalente de un gesto tap_and_hold es
+     * {GEIS_GESTURE_TAP, GEIS_GESTURE_DRAG}.
      * @param  gt El gesto.
      * @param  numFingers Número de dedos usados en el gesto.
      * @return Su equivalente.
@@ -90,13 +90,13 @@ public:
      * Returns a list with the equivalents uTouch-GEIS gestures to the
      * indicated gesture, if it doesn't have equivalent, returns an empty
      * list.
-     * For example, the equivalent of a tap_and_hold gesture with 2 fingers
-     * is {GEIS_GESTURE_TYPE_TAP2, GEIS_GESTURE_TYPE_DRAG2}.
+     * For example, the equivalent of a tap_and_hold gesture is
+     * {GEIS_GESTURE_TAP, GEIS_GESTURE_DRAG}.
      * @param  gt The gesture.
      * @param  numFingers Number of fingers used in the gesture.
      * @return The equivalent.
      */
-    static QStringList getGeisEquivalent(GestureType gt, int numFingers);
+    static QStringList getGeisEquivalent(GestureType gt);
 
 };
 

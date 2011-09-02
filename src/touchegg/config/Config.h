@@ -73,7 +73,7 @@ private:
      * The gestures are saved directly in the format used for GEIS to
      * subscribe to this gestures.
      */
-    QHash<QString, QStringList> usedGestures;
+    QHash<QString, QList< QPair<QStringList, int> > > usedGestures;
 
     //--------------------------------------------------------------------------
 
@@ -91,6 +91,22 @@ private:
      * @see usedGestures
      */
     void initConfig(QFile& file);
+
+    /**
+     * @~spanish
+     * Guarda los gestos usados en la lista.
+     * @param app Aplicación.
+     * @param gestureType Tipo del gesto.
+     * @param numFingers Número de dedos.
+     *
+     * @~english
+     * Saves the used gestures in the list.
+     * @param app The application.
+     * @param gestureType The gesture to save.
+     * @param numFingers Number of fingers.
+     */
+    void saveUsedGestures(const QString &app, const QString &gestureType,
+            int numFingers);
 
     //--------------------------------------------------------------------------
 
@@ -139,7 +155,8 @@ public:
      * Se encuentran directamente en el formato utilizado por GEIS para
      * suscribirse a los mismo.
      * @param  application La aplicación.
-     * @return Dicha lista.
+     * @return Dicha lista, compuesta por el nombre en formato GEIS y el número
+     *         de dedos.
      *
      * @~english
      * Returns a list with all gestures used by the specified application.
@@ -147,9 +164,11 @@ public:
      * They are saved directly in the format used for GEIS to subscribe to
      * this gestures.
      * @param  The application.
-     * @return The list.
+     * @return The list, composed by the name, in GEIS format, and the number of
+     *         fingers.
      */
-    QStringList getUsedGestures(const QString& application) const;
+    QList< QPair<QStringList, int> > getUsedGestures(
+            const QString& application) const;
 
     //--------------------------------------------------------------------------
 

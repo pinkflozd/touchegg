@@ -47,7 +47,7 @@ GestureHandler::~GestureHandler()
 // **********                   PRIVATE METHODS                    ********** //
 // ************************************************************************** //
 
-Gesture* GestureHandler::createGesture(GeisGestureType type, GeisGestureId id,
+Gesture* GestureHandler::createGesture(const QString &type, int id,
         const QHash<QString, QVariant>& attrs, bool isComposedGesture) const
 {
     // Creamos el gesto sin su acción
@@ -56,6 +56,7 @@ Gesture* GestureHandler::createGesture(GeisGestureType type, GeisGestureId id,
         ret = this->gestureFact->createComposedGesture(type, id, attrs);
     else
         ret = this->gestureFact->createSimpleGesture(type, id, attrs);
+
     if(ret == NULL)
         return NULL;
 
@@ -196,16 +197,16 @@ void GestureHandler::executeTap()
 // **********                     PUBLIC SLOTS                     ********** //
 // ************************************************************************** //
 
-void GestureHandler::executeGestureStart(GeisGestureType type,
-        GeisGestureId id, const QHash<QString, QVariant>& attrs)
+void GestureHandler::executeGestureStart(const QString &type, int id,
+        const QHash<QString, QVariant>& attrs)
 {
-
     // Si no se está ejecutando ningún gesto creamos uno nuevo
     if(this->currentGesture == NULL) {
         this->currentGesture = this->createGesture(type, id, attrs, false);
         if(this->currentGesture != NULL) {
             // Ejecutamos el gesto
-            qDebug() << "\tGesture Start";
+            qDebug() << "\tGesture Start" << id << type;
+
             this->currentGesture->start();
         }
 
@@ -215,8 +216,7 @@ void GestureHandler::executeGestureStart(GeisGestureType type,
 
         // El nuevo gesto debe ser un drag con igual número de dedos que el tap
         // en ejecución para que se considere un TAP_AND_HOLD
-        if(type==GEIS_GESTURE_PRIMITIVE_DRAG
-                && attrs.contains(GEIS_GESTURE_ATTRIBUTE_TOUCHES)
+        if(attrs.contains(GEIS_GESTURE_ATTRIBUTE_TOUCHES)
                 && this->currentGesture->getAttrs().contains(
                         GEIS_GESTURE_ATTRIBUTE_TOUCHES)
                 && attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES)
@@ -238,14 +238,14 @@ void GestureHandler::executeGestureStart(GeisGestureType type,
     }
 }
 
-void GestureHandler::executeGestureUpdate(GeisGestureType type,
-        GeisGestureId id,const QHash<QString, QVariant>& attrs)
+void GestureHandler::executeGestureUpdate(const QString &type, int id,
+        const QHash<QString, QVariant>& attrs)
 {
     // Si es un update del gesto en ejecución
     if(this->currentGesture != NULL
             && this->currentGesture->getId() == id
             && !this->timerTap->isActive()) {
-        qDebug() << "\tGesture Update";
+        qDebug() << "\tGesture Update" << id << type;
         this->currentGesture->setAttrs(attrs);
         this->currentGesture->update();
 
@@ -265,8 +265,7 @@ void GestureHandler::executeGestureUpdate(GeisGestureType type,
 
         // El nuevo gesto debe ser un tap con igual número de dedos que el tap
         // en ejecución para que se considere un DOUBLE_TAP
-        if(type==GEIS_GESTURE_PRIMITIVE_TAP
-                && attrs.contains(GEIS_GESTURE_ATTRIBUTE_TOUCHES)
+        if (attrs.contains(GEIS_GESTURE_ATTRIBUTE_TOUCHES)
                 && this->currentGesture->getAttrs().contains(
                         GEIS_GESTURE_ATTRIBUTE_TOUCHES)
                 && attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES)
@@ -293,10 +292,10 @@ void GestureHandler::executeGestureUpdate(GeisGestureType type,
     }
 }
 
-void GestureHandler::executeGestureFinish(GeisGestureType /*type*/,
-        GeisGestureId /*id*/, const QHash<QString, QVariant>& attrs)
+void GestureHandler::executeGestureFinish(const QString &/*type*/, int id,
+        const QHash<QString, QVariant>& attrs)
 {
-    if(this->currentGesture != NULL) {
+    if(this->currentGesture != NULL && this->currentGesture->getId() == id) {
         qDebug() << "\tGesture Finish";
         this->currentGesture->setAttrs(attrs);
         this->currentGesture->finish();

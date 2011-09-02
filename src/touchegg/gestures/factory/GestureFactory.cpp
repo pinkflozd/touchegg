@@ -39,18 +39,26 @@ GestureFactory* GestureFactory::getInstance()
 // **********                    PUBLIC METHODS                    ********** //
 // ************************************************************************** //
 
-Gesture* GestureFactory::createSimpleGesture(GeisGestureType type,
-        GeisGestureId id, QHash<QString, QVariant> attrs)
+Gesture* GestureFactory::createSimpleGesture(const QString &type, int id,
+        QHash<QString, QVariant> attrs)
 {
     int numFingers = attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES).toInt();
 
     // TAP
-    if(type == GEIS_GESTURE_PRIMITIVE_TAP) {
+    if (type == GEIS_GESTURE_TYPE_TAP1
+            || type == GEIS_GESTURE_TYPE_TAP2
+            || type == GEIS_GESTURE_TYPE_TAP3
+            || type == GEIS_GESTURE_TYPE_TAP4
+            || type == GEIS_GESTURE_TYPE_TAP5) {
         return new Gesture(GestureTypeEnum::TAP, numFingers,
                 GestureDirectionEnum::NO_DIRECTION, id, attrs);
 
     // DRAG
-    } else if(type == GEIS_GESTURE_PRIMITIVE_DRAG) {
+    } else if (type == GEIS_GESTURE_TYPE_DRAG1
+            || type == GEIS_GESTURE_TYPE_DRAG2
+            || type == GEIS_GESTURE_TYPE_DRAG3
+            || type == GEIS_GESTURE_TYPE_DRAG4
+            || type == GEIS_GESTURE_TYPE_DRAG5) {
         // UP
         if(attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_X).toFloat() == 0
                 && attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_Y).toFloat() < 0)
@@ -76,7 +84,11 @@ Gesture* GestureFactory::createSimpleGesture(GeisGestureType type,
                     GestureDirectionEnum::RIGHT, id, attrs);
 
     // PINCH
-    } else if(type == GEIS_GESTURE_PRIMITIVE_PINCH) {
+    } else if (type == GEIS_GESTURE_TYPE_PINCH1
+            || type == GEIS_GESTURE_TYPE_PINCH2
+            || type == GEIS_GESTURE_TYPE_PINCH3
+            || type == GEIS_GESTURE_TYPE_PINCH4
+            || type == GEIS_GESTURE_TYPE_PINCH5) {
         // IN
         if(attrs.value(GEIS_GESTURE_ATTRIBUTE_RADIUS_DELTA).toFloat() < 0)
             return new Gesture(GestureTypeEnum::PINCH, numFingers,
@@ -88,7 +100,11 @@ Gesture* GestureFactory::createSimpleGesture(GeisGestureType type,
                     GestureDirectionEnum::OUT, id, attrs);
 
     // ROTATE
-    } else if(type == GEIS_GESTURE_PRIMITIVE_ROTATE) {
+    } else if (type == GEIS_GESTURE_TYPE_ROTATE1
+            || type == GEIS_GESTURE_TYPE_ROTATE2
+            || type == GEIS_GESTURE_TYPE_ROTATE3
+            || type == GEIS_GESTURE_TYPE_ROTATE4
+            || type == GEIS_GESTURE_TYPE_ROTATE5) {
         // LEFT
         if(attrs.value(GEIS_GESTURE_ATTRIBUTE_ANGLE_DELTA).toFloat() < 0)
             return new Gesture(GestureTypeEnum::ROTATE, numFingers,
@@ -111,13 +127,17 @@ Gesture* GestureFactory::createSimpleGesture(GeisGestureType type,
     return NULL;
 }
 
-Gesture* GestureFactory::createComposedGesture(GeisGestureType type,
-        GeisGestureId id, QHash<QString, QVariant> attrs)
+Gesture* GestureFactory::createComposedGesture(const QString &type, int id,
+        QHash<QString, QVariant> attrs)
 {
     int numFingers = attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES).toInt();
 
     // TAP & HOLD
-    if(type == GEIS_GESTURE_PRIMITIVE_DRAG) {
+    if (type == GEIS_GESTURE_TYPE_DRAG1
+            || type == GEIS_GESTURE_TYPE_DRAG2
+            || type == GEIS_GESTURE_TYPE_DRAG3
+            || type == GEIS_GESTURE_TYPE_DRAG4
+            || type == GEIS_GESTURE_TYPE_DRAG5) {
 
         // UP
         if(attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_X).toFloat() == 0
@@ -144,7 +164,11 @@ Gesture* GestureFactory::createComposedGesture(GeisGestureType type,
                     GestureDirectionEnum::RIGHT, id, attrs);
 
     // DOUBLE TAP
-    } else if(type == GEIS_GESTURE_PRIMITIVE_TAP) {
+    } else if (type == GEIS_GESTURE_TYPE_TAP1
+            || type == GEIS_GESTURE_TYPE_TAP2
+            || type == GEIS_GESTURE_TYPE_TAP3
+            || type == GEIS_GESTURE_TYPE_TAP4
+            || type == GEIS_GESTURE_TYPE_TAP5) {
         return new Gesture(GestureTypeEnum::DOUBLE_TAP, numFingers,
                 GestureDirectionEnum::NO_DIRECTION, id, attrs);
 

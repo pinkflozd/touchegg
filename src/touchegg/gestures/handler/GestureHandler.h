@@ -102,6 +102,8 @@ private:
      *         valor del propio atributo.
      * @param  isComposedGesture Si es un gesto compuesto (tap&hold, double
      *         tap...) o no.
+     * @param  gestureWindow ID de la ventana sobre la que se ejecuta el gesto.
+     * @param  wClass Clase de la ventana sobre la que se produce el gesto.
      * @return El gesto o NULL.
      *
      * @~english
@@ -113,9 +115,11 @@ private:
      *         the attribute.
      * @param  isComposedGesture If is a composed gesture (tap&hold, double
      *         tap) or not.
+     * @param  gestureWindow ID of the window on which the gesture occurs.
+     * @param  wClass Class of the window on which the gesture occurs.
      * @return The gesture or NULL.
      */
-    Gesture* createGesture(GeisGestureType type, GeisGestureId id,
+    Gesture* createGesture(const QString &type, int id,
         const QHash<QString, QVariant>& attrs, bool isComposedGesture) const;
 
     //--------------------------------------------------------------------------
@@ -197,61 +201,29 @@ public slots:
     /**
      * @~spanish
      * Ejecuta el gesto indicado.
-     * @param type  Tipo del gesto.
-     * @param id    ID del gesto.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
+     * @param type   Tipo del gesto.
+     * @param id     ID del gesto.
+     * @param attrs  Atributos del gestos, siendo la clave el nombre del
      *        atributo (por ejemplo "focus x", "touches"...) y el valor el
      *        valor del propio atributo.
      *
      * @~english
      * Runs the indicated gesture.
-     * @param type  Gesture type.
-     * @param id    Gesture ID.
-     * @param attrs Gesture attributes, where the key is the name of the
+     * @param type   Gesture type.
+     * @param id     Gesture ID.
+     * @param attrs  Gesture attributes, where the key is the name of the
      *        attribute (ie "focus x", "touches") and the value the value of
      *        the attribute.
      */
-    void executeGestureStart(GeisGestureType type, GeisGestureId id,
+    void executeGestureStart(const QString &type, int id,
+            const QHash<QString, QVariant>& attrs);
+
+    /// @see executeGestureStart()
+    void executeGestureUpdate(const QString &type, int id,
         const QHash<QString, QVariant>& attrs);
 
-    /**
-     * @~spanish
-     * Ejecuta el gesto indicado.
-     * @param type  Tipo del gesto.
-     * @param id    ID del gesto.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     *
-     * @~english
-     * Runs the indicated gesture.
-     * @param type  Gesture type.
-     * @param id    Gesture ID.
-     * @param attrs Gesture attributes, where the key is the name of the
-     *        attribute (ie "focus x", "touches") and the value the value of
-     *        the attribute.
-     */
-    void executeGestureUpdate(GeisGestureType type, GeisGestureId id,
-        const QHash<QString, QVariant>& attrs);
-
-    /**
-     * @~spanish
-     * Ejecuta el gesto indicado.
-     * @param type  Tipo del gesto.
-     * @param id    ID del gesto.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     *
-     * @~english
-     * Runs the indicated gesture.
-     * @param type  Gesture type.
-     * @param id    Gesture ID.
-     * @param attrs Gesture attributes, where the key is the name of the
-     *        attribute (ie "focus x", "touches") and the value the value of
-     *        the attribute.
-     */
-    void executeGestureFinish(GeisGestureType type, GeisGestureId id,
+    /// @see executeGestureStart()
+    void executeGestureFinish(const QString &type, int id,
         const QHash<QString, QVariant>& attrs);
 
 };

@@ -25,13 +25,13 @@
 // ************************************************************************** //
 
 Gesture::Gesture(GestureTypeEnum::GestureType type, int numFingers,
-        GestureDirectionEnum::GestureDirection dir, GeisGestureId id,
-        const QHash<QString, QVariant>& attrs) :
-        type(type),
-        numFingers(numFingers),
-        dir(dir),
-        id(id),
-        attrs(attrs)
+        GestureDirectionEnum::GestureDirection dir, int id,
+        const QHash<QString, QVariant>& attrs)
+        : type(type),
+          numFingers(numFingers),
+          dir(dir),
+          id(id),
+          attrs(attrs)
 {
 
 }
@@ -84,7 +84,7 @@ GestureDirectionEnum::GestureDirection Gesture::getDirection() const
     return this->dir;
 }
 
-GeisGestureId Gesture::getId() const
+int Gesture::getId() const
 {
     return this->id;
 }
@@ -116,7 +116,7 @@ void Gesture::setDirection(GestureDirectionEnum::GestureDirection dir)
     this->dir = dir;
 }
 
-void Gesture::setId(GeisGestureId id)
+void Gesture::setId(int id)
 {
     this->id = id;
 }
