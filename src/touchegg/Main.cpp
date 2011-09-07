@@ -34,6 +34,5 @@
 int main(int argc, char** argv)
 {
     Touchegg touchegg(argc, argv);
-    QTimer::singleShot(0, &touchegg, SLOT(start()));
     return touchegg.exec();
 }

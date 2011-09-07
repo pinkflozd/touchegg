@@ -64,11 +64,22 @@ GestureCollector::GestureCollector()
      * subcripciones a dicha instancia para escuchar en diferentes ventanas.
      */
     this->geis = geis_new(GEIS_INIT_TRACK_DEVICES, NULL);
+
+    if (!this->geis)
+        qFatal("Failed to initialize geis instance");
+
+
+    // Inicilizamos el socket que recibirá los eventos de uTouch
+    int fd;
+    geis_get_configuration(this->geis, GEIS_CONFIGURATION_FD, &fd);
+    this->socketNotifier = new QSocketNotifier(fd, QSocketNotifier::Read, this);
+    connect(this->socketNotifier, SIGNAL(activated(int)), SLOT(geisEvent()));
 }
 
 GestureCollector::~GestureCollector()
 {
     geis_delete(this->geis);
+    delete this->socketNotifier;
 }
 
 
@@ -76,51 +87,39 @@ GestureCollector::~GestureCollector()
 // **********                   PROTECTED METHOS                   ********** //
 // ************************************************************************** //
 
-void GestureCollector::run()
+void GestureCollector::geisEvent()
 {
-    int fd;
     GeisStatus status;
 
-    geis_get_configuration(this->geis, GEIS_CONFIGURATION_FD, &fd);
+    status = geis_dispatch_events(this->geis);
+    if (status != GEIS_STATUS_SUCCESS) {
+        qWarning("Failed to dispatch geis events");
+        return;
+    }
 
-    for (;;) {
-        fd_set read_fds;
-        FD_ZERO(&read_fds);
-        FD_SET(0, &read_fds);
-        FD_SET(fd, &read_fds);
-        int sstat = select(fd+1, &read_fds, NULL, NULL, NULL);
+    GeisEvent event;
+    for (status = geis_next_event(this->geis, &event);
+            status == GEIS_STATUS_SUCCESS || status == GEIS_STATUS_CONTINUE;
+            status = geis_next_event(this->geis, &event)) {
+        switch (geis_event_type(event)) {
+        case GEIS_EVENT_GESTURE_BEGIN:
+            GestureCollector::gestureStart(this, event);
+            break;
+        case GEIS_EVENT_GESTURE_UPDATE:
+            GestureCollector::gestureUpdate(this, event);
+            break;
+        case GEIS_EVENT_GESTURE_END:
+            GestureCollector::gestureFinish(this, event);
+            break;
+        case GEIS_EVENT_INIT_COMPLETE:
+            emit this->ready();
+            break;
 
-        if (sstat < 0) {
-            qFatal("ERROR");
+        default:
             break;
         }
 
-        if (FD_ISSET(fd, &read_fds)) {
-            GeisEvent event;
-            status = geis_dispatch_events(this->geis);
-            status = geis_next_event(this->geis, &event);
-            while (status == GEIS_STATUS_CONTINUE
-                    || status == GEIS_STATUS_SUCCESS) {
-                switch (geis_event_type(event)) {
-                case GEIS_EVENT_GESTURE_BEGIN:
-                    GestureCollector::gestureStart(this, event);
-                    break;
-                case GEIS_EVENT_GESTURE_UPDATE:
-                    GestureCollector::gestureUpdate(this, event);
-                    break;
-                case GEIS_EVENT_GESTURE_END:
-                    GestureCollector::gestureFinish(this, event);
-                    break;
-                default:
-                    break;
-                }
-                geis_event_delete(event);
-                status = geis_next_event(this->geis, &event);
-            }
-        }
-
-        if (FD_ISSET(0, &read_fds))
-            break;
+        geis_event_delete(event);
     }
 }
 
@@ -169,36 +168,13 @@ void GestureCollector::addWindow(Window w)
                     this->geis, "subscription", GEIS_SUBSCRIPTION_CONT);
             geis_subscription_add_filter(subscription, filter);
             geis_subscription_activate(subscription);
-
-            // Guardamos la subcripción y el filtro para poder liberarlos
-            QList<GeisSubscription> auxSubs;
-            QList<GeisFilter>       auxFilters;
-            if (this->subscriptions.contains(w)) {
-                auxSubs = this->subscriptions.value(w);
-                auxFilters = this->filters.value(w);
-            }
-
-            auxSubs.append(subscription);
-            auxFilters.append(filter);
-
-            this->subscriptions.insert(w, auxSubs);
-            this->filters.insert(w, auxFilters);
         }
     }
 }
 
-void GestureCollector::removeWindow(Window w)
+void GestureCollector::removeWindow(Window /*w*/)
 {
-    QList<GeisSubscription> auxSubs    = this->subscriptions.value(w);
-    QList<GeisFilter>       auxFilters = this->filters.value(w);
-
-    for (int n=0; n<auxSubs.length(); n++) {
-        GeisSubscription sub    = auxSubs.at(n);
-        GeisFilter       filter = auxFilters.at(n);
-
-        geis_filter_delete(filter);
-        geis_subscription_delete(sub);
-    }
+    // Si se intenta eliminar peta aleatoriamente
 }
 
 

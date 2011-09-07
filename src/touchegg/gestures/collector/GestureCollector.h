@@ -32,7 +32,7 @@
  * @~snglish
  * Collect all the gestures using utouch-geis and emits signals to report it.
  */
-class GestureCollector : public QThread
+class GestureCollector : public QObject
 {
     Q_OBJECT
 
@@ -49,21 +49,14 @@ private:
 
     /**
      * @~spanish
-     * Hash con todas las suscripciones creadas. Vale para poder liberarlas.
+     * Socket notifier que emitirá una señal activated() cada vez que se
+     * produzca un gesto.
      *
      * @~english
-     * Hash with all the created subscriptions. Used to free it.
+     * Socket notifier that will emit a activated() signal whenever a gestures
+     * is produced.
      */
-    QHash<Window, QList<GeisSubscription> > subscriptions;
-
-    /**
-     * @~spanish
-     * Hash con todos los filtros creados. Vale para poder liberarlos.
-     *
-     * @~english
-     * Hash with all the created filters. Used to free it.
-     */
-    QHash<Window, QList<GeisFilter> > filters;
+    QSocketNotifier* socketNotifier;
 
     //--------------------------------------------------------------------------
 
@@ -97,16 +90,16 @@ private:
      */
     QString getWindowClass(Window window) const;
 
-protected:
+private slots:
 
     /**
      * @~spanish
-     * Función de inicio del hilo.
+     * Slot que es llamada cada vez que un gesto se genera.
      *
      * @~english
-     * Thread start function.
+     * Slot that is called whenever a gesture is generated.
      */
-    void run();
+    void geisEvent();
 
 public:
 
@@ -211,6 +204,14 @@ signals:
     void executeGestureFinish(const QString &type, int id,
         const QHash<QString, QVariant>& attrs);
 
+    /**
+     * @~spanish
+     * Señal que se emite cuando uTouch está inicializado.
+     *
+     * @~english
+     * Signal emited when uTouch is inicializzed.
+     */
+    void ready();
 };
 
 #endif // GESTURECOLLECTOR_H

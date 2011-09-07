@@ -149,7 +149,7 @@ public:
      */
     virtual ~Touchegg();
 
-public slots:
+private slots:
 
     /**
      * @~spanish

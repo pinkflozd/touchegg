@@ -27,24 +27,12 @@
 Touchegg::Touchegg(int argc, char** argv)
         : QApplication(argc, argv),
           gestureCollector(new GestureCollector),
-          gestureHandler(new GestureHandler)
+          gestureHandler(new GestureHandler),
+          clientList(this->getClientList())
 {
+    // Inicializamos Touchégg cuando uTouch esté listo
+    connect(this->gestureCollector, SIGNAL(ready()), this, SLOT(start()));
 
-}
-
-Touchegg::~Touchegg()
-{
-    delete this->gestureCollector;
-    delete this->gestureHandler;
-}
-
-
-// ************************************************************************** //
-// **********                     PUBLIC SLOTS                     ********** //
-// ************************************************************************** //
-
-void Touchegg::start()
-{
     // Conectamos el GestureCollector con el GestureHandler para que el último
     // trate los eventos que recoge el primero
     connect(gestureCollector, SIGNAL(executeGestureStart(
@@ -59,6 +47,23 @@ void Touchegg::start()
             QString,int,QHash<QString,QVariant>)),
             gestureHandler, SLOT(executeGestureFinish(
             QString,int,QHash<QString,QVariant>)));
+}
+
+Touchegg::~Touchegg()
+{
+    delete this->gestureCollector;
+    delete this->gestureHandler;
+}
+
+
+// ************************************************************************** //
+// **********                    PRIVATE SLOTS                     ********** //
+// ************************************************************************** //
+
+void Touchegg::start()
+{
+    // Nos suscribimos a los gestos globales
+    this->gestureCollector->addWindow(QX11Info::appRootWindow());
 
     // Obtenemos la lista actual de ventanas para suscribirnos a ellas
     this->clientList = this->getClientList();
@@ -66,18 +71,6 @@ void Touchegg::start()
     foreach(Window w, this->clientList) {
         this->gestureCollector->addWindow(w);
     }
-
-    // Nos suscribimos a los gestos globales
-    this->gestureCollector->addWindow(QX11Info::appRootWindow());
-
-    // Lanzamos GestureHandler en un hilo aparte para no congelar el bucle de
-    // eventos de Qt
-    this->gestureCollector->start();
-
-    // Hacemos que Touchégg reciba la creación o destrucción de ventanas
-    XSelectInput(QX11Info::display(), QX11Info::appRootWindow(
-            QX11Info::appScreen()), PropertyChangeMask);
-    XFlush(QX11Info::display());
 }
 
 
