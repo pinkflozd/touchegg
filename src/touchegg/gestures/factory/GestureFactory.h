@@ -35,49 +35,17 @@
 class GestureFactory
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Única instancia de la clase.
-     *
-     * @~english
-     * Single instance of the class.
-     */
-    static GestureFactory* instance;
-
-    // Hide constructors
-    GestureFactory(){}
-    GestureFactory(const GestureFactory&);
-    const GestureFactory& operator = (const GestureFactory&);
-
 public:
 
     /**
-     * @~spanish
-     * Único método para obtener una instancia de la clase.
-     * @return La única instancia de la clase.
-     *
-     * @~english
      * Only method to get an instance of the class.
      * @return The single instance of the class.
      */
-    static GestureFactory* getInstance();
+    static GestureFactory *getInstance();
 
     //--------------------------------------------------------------------------
 
     /**
-     * @~spanish
-     * Crea un gesto no-compuesto con las propiedades indicadas.
-     * IMPORTANTE: No olvidar liberar memoria.
-     * @param type  Tipo del gesto.
-     * @param id    ID del gesto.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     * @return El gesto.
-     *
-     * @~english
      * Creates a no-composed gesture with the specified properties.
      * IMPORTANT: Don't forget to free memory.
      * @param type  Gesture type.
@@ -87,22 +55,10 @@ public:
      *        the attribute.
      * @return The gesture.
      */
-    Gesture* createSimpleGesture(const QString &type, int id,
+    Gesture *createSimpleGesture(const QString &type, int id,
             QHash<QString, QVariant> attrs);
 
     /**
-     * @~spanish
-     * Crea un gesto compuesto (tap&hol, double tap...) con las propiedades
-     * indicadas.
-     * IMPORTANTE: No olvidar liberar memoria.
-     * @param type  Tipo del gesto.
-     * @param id    ID del gesto.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     * @return El gesto.
-     *
-     * @~english
      * Creates a composed gesture (tap&hold, double tap...) with the
      * specified properties.
      * IMPORTANT: Don't forget to free memory.
@@ -113,8 +69,21 @@ public:
      *        the attribute.
      * @return The gesture.
      */
-    Gesture* createComposedGesture(const QString &type, int id,
+    Gesture *createComposedGesture(const QString &type, int id,
             QHash<QString, QVariant> attrs);
+
+private:
+
+    /**
+     * Single instance of the class.
+     */
+    static GestureFactory *instance;
+
+    // Hide constructors
+    GestureFactory() {}
+    GestureFactory(const GestureFactory &);
+    const GestureFactory &operator = (const GestureFactory &);
+
 };
 
 #endif // GESTUREFACTORY_H

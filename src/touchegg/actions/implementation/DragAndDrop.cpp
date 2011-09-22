@@ -24,17 +24,17 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-DragAndDrop::DragAndDrop(const QString& settings, Window window)
-        : Action(settings, window)
+DragAndDrop::DragAndDrop(const QString &settings, Window window)
+    : Action(settings, window)
 {
     this->button = 1;
 
     QStringList strl = settings.split("=");
-    if(strl.length() == 2 && strl.at(0) == "BUTTON") {
+    if (strl.length() == 2 && strl.at(0) == "BUTTON") {
         bool ok = false;
         int aux = strl.at(1).toInt(&ok);
 
-        if(ok && aux>=1 && aux<=9)
+        if (ok && aux >= 1 && aux <= 9)
             this->button = aux;
         else
             qWarning() << "Error reading MOUSE_CLICK settings, using " <<
@@ -56,7 +56,7 @@ void DragAndDrop::executeStart(const QHash<QString, QVariant>& /*attrs*/)
 
 void DragAndDrop::executeUpdate(const QHash<QString, QVariant>& attrs)
 {
-    if(!attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_X)
+    if (!attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_X)
             || !attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_Y))
         return;
 

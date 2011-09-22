@@ -24,63 +24,24 @@
 #include "src/touchegg/util/Include.h"
 
 /**
- * @~spanish
- * Clase de la que deben heredar todas las acciones. Las acciones son
- * operaciones asociadas a un gesto que se ejecutarán cuando dicho gesto se
- * capture.
- *
- * @~english
  * Class that should inherit all actions. Actions are operations associated with
  * a gesture that will be executed when this gesture is caught.
  */
 class Action
 {
 
-protected:
-
-    /**
-     * @~spanish
-     * Configuración de la acción.
-     *
-     * @~english
-     * Action settings.
-     */
-    QString settings;
-
-    /**
-     * @~spanish
-     * Ventana sobre la que se realiza la acción.
-     *
-     * @~english
-     * Window on which execute the action.
-     */
-    Window window;
-
 public:
 
     /**
-     * @~spanish
      * Constructor.
-     * @param settings     Configuración del gesto.
-     * @param window Ventana sobre la que se realiza el gesto.
-     *
-     * @~english
-     * Constructor.
-     * @param settings     Gesture settings.
-     * @param window Window on which execute the action.
+     * @param settings Gesture settings.
+     * @param window   Window on which execute the action.
      */
-    Action(const QString& settings, Window window) :
-        settings(settings),
-        window(window) {}
+    Action(const QString &settings, Window window)
+        : settings(settings),
+          window(window) {}
 
     /**
-     * @~spanish
-     * Parte de la acción que se ejecutará cuando el gesto se inicie.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     *
-     * @~english
      * Part of the action that will be executed when the gesture is started.
      * @param attrs Gesture attributes, where the key is the name of the
      *        attribute (ie "focus x", "touches") and the value the value of
@@ -89,13 +50,6 @@ public:
     virtual void executeStart(const QHash<QString, QVariant>& attrs) = 0;
 
     /**
-     * @~spanish
-     * Parte de la acción que se ejecutará cuando el gesto se actualice.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     *
-     * @~english
      * Part of the action that will be executed when the gesture is updated.
      * @param attrs Gesture attributes, where the key is the name of the
      *        attribute (ie "focus x", "touches") and the value the value of
@@ -104,19 +58,24 @@ public:
     virtual void executeUpdate(const QHash<QString, QVariant>& attrs) = 0;
 
     /**
-     * @~spanish
-     * Parte de la acción que se ejecutará cuando el gesto se finalice.
-     * @param attrs Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     *
-     * @~english
      * Part of the action that will be executed when the gesture finish.
      * @param attrs Gesture attributes, where the key is the name of the
      *        attribute (ie "focus x", "touches") and the value the value of
      *        the attribute.
      */
     virtual void executeFinish(const QHash<QString, QVariant>& attrs) = 0;
+
+protected:
+
+    /**
+     * Action settings.
+     */
+    QString settings;
+
+    /**
+     * Window on which execute the action.
+     */
+    Window window;
 
 };
 

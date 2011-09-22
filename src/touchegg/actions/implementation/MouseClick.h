@@ -25,35 +25,27 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Emula un click con el ratón.
- *
- * @~english
  * Emulates a click with the mouse.
  */
 class MouseClick : public Action
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Botón a emular.
-     *
-     * @~english
-     * Button to emulate.
-     */
-    int button;
-
 public:
 
-    MouseClick(const QString& settings, Window window);
+    MouseClick(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 
     void executeUpdate(const QHash<QString, QVariant>& attrs);
 
     void executeFinish(const QHash<QString, QVariant>& attrs);
+
+private:
+
+    /**
+     * Button to emulate.
+     */
+    int button;
 
 };
 #endif // LEFTBUTTONCLICK_H

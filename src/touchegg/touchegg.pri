@@ -11,6 +11,8 @@ include(actions/types/actions.types.pri)
 include(actions/factory/actions.factory.pri)
 include(actions/implementation/actions.implementation.pri)
 
+include(windows/windows.pri)
+
 HEADERS += \
     src/touchegg/Touchegg.h
 

@@ -24,8 +24,8 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-CloseWindow::CloseWindow(const QString& settings, Window window)
-        : Action(settings, window) {}
+CloseWindow::CloseWindow(const QString &settings, Window window)
+    : Action(settings, window) {}
 
 
 // ************************************************************************** //
@@ -51,7 +51,7 @@ void CloseWindow::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     XSendEvent(QX11Info::display(),
             QX11Info::appRootWindow(QX11Info::appScreen()), false,
             (SubstructureNotifyMask | SubstructureRedirectMask),
-            (XEvent*)&event);
+            (XEvent *)&event);
 
     XFlush(QX11Info::display());
 }

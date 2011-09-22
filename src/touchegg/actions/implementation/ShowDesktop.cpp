@@ -24,8 +24,8 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-ShowDesktop::ShowDesktop(const QString& settings, Window window)
-        : Action(settings, window) {}
+ShowDesktop::ShowDesktop(const QString &settings, Window window)
+    : Action(settings, window) {}
 
 
 // ************************************************************************** //
@@ -42,7 +42,7 @@ void ShowDesktop::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     Atom atomRet;
     int size;
     unsigned long numItems, bytesAfterReturn;
-    unsigned char* propRet;
+    unsigned char *propRet;
 
     XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
             XInternAtom(QX11Info::display(), "_NET_SHOWING_DESKTOP", false),
@@ -53,16 +53,16 @@ void ShowDesktop::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
 
     // Minimizamos o restauramos todas la ventanas
     XClientMessageEvent event;
-        event.window = QX11Info::appRootWindow(QX11Info::appScreen());
-        event.type = ClientMessage;
-        event.message_type = XInternAtom(QX11Info::display(),
+    event.window = QX11Info::appRootWindow(QX11Info::appScreen());
+    event.type = ClientMessage;
+    event.message_type = XInternAtom(QX11Info::display(),
             "_NET_SHOWING_DESKTOP", false);
-        event.format = 32;
-        event.data.l[0] = !isShowingDesktop;
+    event.format = 32;
+    event.data.l[0] = !isShowingDesktop;
 
-        XSendEvent(QX11Info::display(),
-                QX11Info::appRootWindow(QX11Info::appScreen()), false,
-                (SubstructureNotifyMask | SubstructureRedirectMask),
-                (XEvent*)&event);
-        XFlush(QX11Info::display());
+    XSendEvent(QX11Info::display(),
+            QX11Info::appRootWindow(QX11Info::appScreen()), false,
+            (SubstructureNotifyMask | SubstructureRedirectMask),
+            (XEvent *)&event);
+    XFlush(QX11Info::display());
 }

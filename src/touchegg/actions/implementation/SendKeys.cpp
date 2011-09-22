@@ -24,21 +24,21 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-SendKeys::SendKeys(const QString& settings, Window window)
-        : Action(settings, window)
+SendKeys::SendKeys(const QString &settings, Window window)
+    : Action(settings, window)
 {
     // Leemos las teclas a enviar desde la configuración
     QStringList keys = settings.split("+");
 
     foreach(QString key, keys) {
-        if(key == "Control" || key == "Shift" || key == "Super"
+        if (key == "Control" || key == "Shift" || key == "Super"
                 || key == "Alt") {
             key = key.append("_L");
             KeySym keySym = XStringToKeysym(key.toStdString().c_str());
             KeyCode keyCode = XKeysymToKeycode(QX11Info::display(), keySym);
             this->holdDownKeys.append(keyCode);
 
-        } else if(key == "AltGr") {
+        } else if (key == "AltGr") {
             KeySym keySym = XStringToKeysym("Alt_R");
             KeyCode keyCode = XKeysymToKeycode(QX11Info::display(), keySym);
             this->holdDownKeys.append(keyCode);
@@ -56,7 +56,7 @@ SendKeys::SendKeys(const QString& settings, Window window)
     event.window = this-> window;
     event.type = ClientMessage;
     event.message_type = XInternAtom(QX11Info::display(), "_NET_ACTIVE_WINDOW",
-                                     false);
+            false);
     event.format = 32;
     event.data.l[0] = 2;
     event.data.l[1] = CurrentTime;
@@ -65,7 +65,7 @@ SendKeys::SendKeys(const QString& settings, Window window)
     XSendEvent(QX11Info::display(),
             QX11Info::appRootWindow(QX11Info::appScreen()), false,
             (SubstructureNotifyMask | SubstructureRedirectMask),
-            (XEvent*)&event);
+            (XEvent *)&event);
 
     XFlush(QX11Info::display());
 }
@@ -82,18 +82,20 @@ void SendKeys::executeUpdate(const QHash<QString, QVariant>& /*attrs*/) {}
 void SendKeys::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
 {
 
-    for(int n=0; n<this->holdDownKeys.length(); n++) {
-        XTestFakeKeyEvent(QX11Info::display(),this->holdDownKeys.at(n),true,0);
+    for (int n = 0; n < this->holdDownKeys.length(); n++) {
+        XTestFakeKeyEvent(QX11Info::display(), this->holdDownKeys.at(n), true,
+                0);
     }
 
-    for(int n=0; n<this->pressBetweenKeys.length(); n++) {
+    for (int n = 0; n < this->pressBetweenKeys.length(); n++) {
         XTestFakeKeyEvent(QX11Info::display(), this->pressBetweenKeys.at(n),
                 true, 0);
         XTestFakeKeyEvent(QX11Info::display(), this->pressBetweenKeys.at(n),
                 false, 0);
     }
 
-    for(int n=0; n<this->holdDownKeys.length(); n++) {
-        XTestFakeKeyEvent(QX11Info::display(),this->holdDownKeys.at(n),false,0);
+    for (int n = 0; n < this->holdDownKeys.length(); n++) {
+        XTestFakeKeyEvent(QX11Info::display(), this->holdDownKeys.at(n), false,
+                0);
     }
 }

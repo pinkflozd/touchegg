@@ -24,8 +24,8 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-RunCommand::RunCommand(const QString& settings, Window window)
-        : Action(settings, window)
+RunCommand::RunCommand(const QString &settings, Window window)
+    : Action(settings, window)
 {
     this->command = settings;
 }
@@ -41,8 +41,8 @@ void RunCommand::executeUpdate(const QHash<QString, QVariant>& /*attrs*/) {}
 
 void RunCommand::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
 {
-    if(this->command != "") {
-        QProcess* myProcess = new QProcess();
+    if (this->command != "") {
+        QProcess *myProcess = new QProcess();
         myProcess->startDetached(this->command);
     }
 }

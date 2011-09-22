@@ -1,5 +1,5 @@
 /**
- * @file /src/touchegg/gestures/implementations/Gesture.cpp
+ * @file /src/touchegg/gestures/implementation/Gesture.cpp
  *
  * This file is part of Touchégg.
  *
@@ -27,11 +27,11 @@
 Gesture::Gesture(GestureTypeEnum::GestureType type, int numFingers,
         GestureDirectionEnum::GestureDirection dir, int id,
         const QHash<QString, QVariant>& attrs)
-        : type(type),
-          numFingers(numFingers),
-          dir(dir),
-          id(id),
-          attrs(attrs)
+    : type(type),
+      numFingers(numFingers),
+      dir(dir),
+      id(id),
+      attrs(attrs)
 {
 
 }
@@ -48,19 +48,19 @@ Gesture::~Gesture()
 
 void Gesture::start() const
 {
-    if(this->action != NULL)
+    if (this->action != NULL)
         this->action->executeStart(this->attrs);
 }
 
 void Gesture::update() const
 {
-    if(this->action != NULL)
+    if (this->action != NULL)
         this->action->executeUpdate(this->attrs);
 }
 
 void Gesture::finish() const
 {
-    if(this->action != NULL)
+    if (this->action != NULL)
         this->action->executeFinish(this->attrs);
 }
 
@@ -94,7 +94,7 @@ const QHash<QString, QVariant>& Gesture::getAttrs() const
     return this->attrs;
 }
 
-const Action* Gesture::getAction() const
+const Action *Gesture::getAction() const
 {
     return this->action;
 }
@@ -126,7 +126,7 @@ void Gesture::setAttrs(const QHash<QString, QVariant>& attrs)
     this->attrs = attrs;
 }
 
-void Gesture::setAction(Action* action)
+void Gesture::setAction(Action *action)
 {
     this->action = action;
 }

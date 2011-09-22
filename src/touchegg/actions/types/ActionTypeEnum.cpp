@@ -32,7 +32,7 @@ QString ActionTypeEnum::getValue(ActionType atEnum)
     return metaEnum.valueToKey(atEnum);
 }
 
-ActionTypeEnum::ActionType ActionTypeEnum::getEnum(const QString& atString)
+ActionTypeEnum::ActionType ActionTypeEnum::getEnum(const QString &atString)
 {
     ActionTypeEnum actionTypeEnum;
     int index = actionTypeEnum.metaObject()->indexOfEnumerator("ActionType");

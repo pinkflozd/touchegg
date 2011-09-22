@@ -24,14 +24,14 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-ChangeViewport::ChangeViewport(const QString& settings, Window window)
-        : Action(settings, window)
+ChangeViewport::ChangeViewport(const QString &settings, Window window)
+    : Action(settings, window)
 {
     this->next = true;
 
-    if(settings == "PREVIOUS")
+    if (settings == "PREVIOUS")
         this->next = false;
-    else if(settings == "NEXT")
+    else if (settings == "NEXT")
         this->next = true;
     else
         qWarning() << "Error reading CHANGE_VIEWPORT settings, using " <<
@@ -53,19 +53,19 @@ void ChangeViewport::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     Atom atomRet;
     int size;
     unsigned long numItems, bytesAfterReturn;
-    unsigned char* propRet;
+    unsigned char *propRet;
 
     int widthViews, heightViews;
-    if(XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
+    if (XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
             XInternAtom(QX11Info::display(), "_NET_DESKTOP_GEOMETRY", false),
             0, 100, false, XA_CARDINAL, &atomRet, &size, &numItems,
             &bytesAfterReturn, &propRet) == Success && numItems == 2) {
-        int* aux = (int*)propRet;
+        int *aux = (int *)propRet;
         widthViews  = aux[0];
         heightViews = aux[1];
         XFree(propRet);
 
-        if(widthViews == 0 || heightViews == 0)
+        if (widthViews == 0 || heightViews == 0)
             return;
     } else {
         return;
@@ -73,11 +73,11 @@ void ChangeViewport::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
 
     // Obtenemos las coordenadas del viewport actual
     int currentX, currentY;
-    if(XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
+    if (XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
             XInternAtom(QX11Info::display(), "_NET_DESKTOP_VIEWPORT", false),
             0, 100, false, XA_CARDINAL, &atomRet, &size, &numItems,
             &bytesAfterReturn, &propRet) == Success && numItems == 2) {
-        int* aux = (int*)propRet;
+        int *aux = (int *)propRet;
         currentX = aux[0];
         currentY = aux[1];
         XFree(propRet);
@@ -87,15 +87,15 @@ void ChangeViewport::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
 
     // Obtenemos las coordenadas del viewport anterior/siguiente
     int nextX, nextY;
-    if(this->next) {
+    if (this->next) {
         nextX = (currentX + QApplication::desktop()->width()) % widthViews;
         nextY = nextX == 0
                 ? (currentY + QApplication::desktop()->height()) % heightViews
                 : currentY;
     } else {
         nextX = (currentX - QApplication::desktop()->width()) % widthViews;
-        if(nextX < 0) {
-            nextY = (currentY-QApplication::desktop()->height()) % heightViews;
+        if (nextX < 0) {
+            nextY = (currentY - QApplication::desktop()->height()) % heightViews;
             nextX *= -1;
             nextY *= -1;
         } else {
@@ -116,6 +116,6 @@ void ChangeViewport::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     XSendEvent(QX11Info::display(),
             QX11Info::appRootWindow(QX11Info::appScreen()), false,
             (SubstructureNotifyMask | SubstructureRedirectMask),
-            (XEvent*)&event);
+            (XEvent *)&event);
     XFlush(QX11Info::display());
 }

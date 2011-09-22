@@ -36,162 +36,17 @@
  */
 class GestureHandler : public QObject
 {
-
     Q_OBJECT
-
-private:
-
-    /**
-     * @~spanish
-     * Gesto que se está ejecutando.
-     *
-     * @~english
-     * Gesture that is running.
-     */
-    Gesture* currentGesture;
-
-    /**
-     * @~spanish
-     * Timer que ejecuta los taps siempre que el gesto no resulte ser un
-     * tap&hold.
-     *
-     * @~english
-     * Timer that running the taps always that the gesture does not prove
-     * to be a tap&hold.
-     */
-    QTimer* timerTap;
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * @~spanish
-     * Factoría para crear los gestos.
-     *
-     * @~english
-     * Factory to create gestures.
-     */
-    GestureFactory* gestureFact;
-
-    /**
-     * @~spanish
-     * Factoría para crear las acciones.
-     *
-     * @~english
-     * Factory to create gestures.
-     */
-    ActionFactory* actionFact;
-
-    /**
-     * @~spanish
-     * Provee acceso a la configurración.
-     *
-     * @~english
-     * Provides access to configurración.
-     */
-    Config* config;
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * @~spanish
-     * Crea un gesto estandar con su acción.
-     * @param  type  Tipo del gesto.
-     * @param  id    ID del gesto.
-     * @param  attrs Atributos del gestos, siendo la clave el nombre del
-     *         atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *         valor del propio atributo.
-     * @param  isComposedGesture Si es un gesto compuesto (tap&hold, double
-     *         tap...) o no.
-     * @param  gestureWindow ID de la ventana sobre la que se ejecuta el gesto.
-     * @param  wClass Clase de la ventana sobre la que se produce el gesto.
-     * @return El gesto o NULL.
-     *
-     * @~english
-     * Create a estandar gesture with their action.
-     * @param  type  Gesture type.
-     * @param  id    Gesture ID.
-     * @param  attrs Gesture attributes, where the key is the name of the
-     *         attribute (ie "focus x", "touches") and the value the value of
-     *         the attribute.
-     * @param  isComposedGesture If is a composed gesture (tap&hold, double
-     *         tap) or not.
-     * @param  gestureWindow ID of the window on which the gesture occurs.
-     * @param  wClass Class of the window on which the gesture occurs.
-     * @return The gesture or NULL.
-     */
-    Gesture* createGesture(const QString &type, int id,
-        const QHash<QString, QVariant>& attrs, bool isComposedGesture) const;
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * @~spanish
-     * Devuelve la ventana sobre la que se produce el gesto.
-     * @param  window Ventana que nos pasa GEIS.
-     * @return Dicha ventana.
-     *
-     * @~english
-     * Returns window over the gestures is make.
-     * @param  window The window that GEIS returns.
-     * @return This window.
-     */
-    Window getGestureWindow(Window window) const;
-
-    /**
-     * @~spanish
-     * Devuelve la ventana de más alto nivel de la ventana indicada.
-     * @param  window La ventana.
-     * @return Dicha ventana
-     *
-     * @~english
-     * Returns the top level window of the specified window.
-     * @param  window The window.
-     * @return This window.
-     */
-    Window getTopLevelWindow(Window window) const;
-
-    /**
-     * @~spanish
-     * Devuelve la clase de la ventana especificada, por ejemplo, para
-     * cualquier ventana de XTerm la clase será "XTerm".
-     * @param  window Dicha ventana.
-     * @return La clase.
-     *
-     * @~english
-     * Returns the class of a window, for example, "XTerm" is the class of
-     * all instances of XTerm.
-     * @param  window This window.
-     * @return The class.
-     */
-    QString getAppClass(Window window) const;
-
-private slots:
-
-    /**
-     * @~spanish
-     * Ejecuta los taps que no han resultado ser un tap&hold.
-     *
-     * @~english
-     * Run the taps that have not proven to be a tap&hold.
-     */
-    void executeTap();
 
 public:
 
     /**
-     * @~spanish
-     * Constructor.
-     *
-     * @~english
-     * Constructor.
+     * Default constructor.
+     * @param parent The parent of the class.
      */
-    GestureHandler();
+    GestureHandler(QObject *parent = 0);
 
     /**
-     * @~spanish
-     * Destructor.
-     *
-     * @~english
      * Destructor.
      */
     virtual ~GestureHandler();
@@ -199,15 +54,6 @@ public:
 public slots:
 
     /**
-     * @~spanish
-     * Ejecuta el gesto indicado.
-     * @param type   Tipo del gesto.
-     * @param id     ID del gesto.
-     * @param attrs  Atributos del gestos, siendo la clave el nombre del
-     *        atributo (por ejemplo "focus x", "touches"...) y el valor el
-     *        valor del propio atributo.
-     *
-     * @~english
      * Runs the indicated gesture.
      * @param type   Gesture type.
      * @param id     Gesture ID.
@@ -220,11 +66,87 @@ public slots:
 
     /// @see executeGestureStart()
     void executeGestureUpdate(const QString &type, int id,
-        const QHash<QString, QVariant>& attrs);
+            const QHash<QString, QVariant>& attrs);
 
     /// @see executeGestureStart()
     void executeGestureFinish(const QString &type, int id,
-        const QHash<QString, QVariant>& attrs);
+            const QHash<QString, QVariant>& attrs);
+
+private slots:
+
+    /**
+     * Run the taps that have not proven to be a composed gesture.
+     */
+    void executeTap();
+
+private:
+
+    /**
+     * Create a estandar gesture with their action.
+     * @param  type  Gesture type.
+     * @param  id    Gesture ID.
+     * @param  attrs Gesture attributes, where the key is the name of the
+     *         attribute (ie "focus x", "touches") and the value the value of
+     *         the attribute.
+     * @param  isComposedGesture If is a composed gesture (tap&hold, double
+     *         tap) or not.
+     * @return The gesture or NULL.
+     */
+    Gesture *createGesture(const QString &type, int id,
+            const QHash<QString, QVariant>& attrs, bool isComposedGesture)
+    const;
+
+    //--------------------------------------------------------------------------
+
+    /**
+     * Returns window over the gestures is make.
+     * @param  window The window that GEIS returns.
+     * @return This window.
+     */
+    Window getGestureWindow(Window window) const;
+
+    /**
+     * Returns the top level window of the specified window.
+     * @param  window The window.
+     * @return This window.
+     */
+    Window getTopLevelWindow(Window window) const;
+
+    /**
+     * Returns the class of a window, for example, "XTerm" is the class of
+     * all instances of XTerm.
+     * @param  window This window.
+     * @return The class.
+     */
+    QString getAppClass(Window window) const;
+
+    //--------------------------------------------------------------------------
+
+    /**
+     * Gesture that is running.
+     */
+    Gesture *currentGesture;
+
+    /**
+     * Timer that running the taps always that the gesture does not prove to be
+     * a composed gesture.
+     */
+    QTimer *timerTap;
+
+    /**
+     * Factory to create gestures.
+     */
+    GestureFactory *gestureFact;
+
+    /**
+     * Factory to create actions.
+     */
+    ActionFactory *actionFact;
+
+    /**
+     * Provides access to the configuration.
+     */
+    Config *config;
 
 };
 

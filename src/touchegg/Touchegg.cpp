@@ -24,35 +24,27 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-Touchegg::Touchegg(int argc, char** argv)
-        : QApplication(argc, argv),
-          gestureCollector(new GestureCollector),
-          gestureHandler(new GestureHandler),
-          clientList(this->getClientList())
+Touchegg::Touchegg(int argc, char **argv)
+    : QApplication(argc, argv),
+      windowListener(new WindowListener(this)),
+      gestureCollector(new GestureCollector(this)),
+      gestureHandler(new GestureHandler(this))
 {
-    // Inicializamos Touchégg cuando uTouch esté listo
-    connect(this->gestureCollector, SIGNAL(ready()), this, SLOT(start()));
+    qDebug() << "Try to make a multitouch gesture. If everything goes well the "
+            "information about the gesture must appear";
 
-    // Conectamos el GestureCollector con el GestureHandler para que el último
-    // trate los eventos que recoge el primero
-    connect(gestureCollector, SIGNAL(executeGestureStart(
-            QString,int,QHash<QString,QVariant>)),
-            gestureHandler, SLOT(executeGestureStart(
-            QString,int,QHash<QString,QVariant>)));
-    connect(gestureCollector, SIGNAL(executeGestureUpdate(
-            QString,int,QHash<QString,QVariant>)),
-            gestureHandler, SLOT(executeGestureUpdate(
-            QString,int,QHash<QString,QVariant>)));
-    connect(gestureCollector, SIGNAL(executeGestureFinish(
-            QString,int,QHash<QString,QVariant>)),
-            gestureHandler, SLOT(executeGestureFinish(
-            QString,int,QHash<QString,QVariant>)));
+    connect(this->gestureCollector, SIGNAL(ready()), this, SLOT(start()));
 }
 
-Touchegg::~Touchegg()
+
+// ************************************************************************** //
+// **********                   PROTECTED METHODS                  ********** //
+// ************************************************************************** //
+
+bool Touchegg::x11EventFilter(XEvent *event)
 {
-    delete this->gestureCollector;
-    delete this->gestureHandler;
+    this->windowListener->x11Event(event);
+    return false;
 }
 
 
@@ -62,90 +54,33 @@ Touchegg::~Touchegg()
 
 void Touchegg::start()
 {
+    // Conectamos el WindowListener con el GestureCollector para recoger los
+    // eventos multitouch en las ventanas creadas si corresponde
+    connect(this->windowListener, SIGNAL(windowCreated(Window)),
+            this->gestureCollector, SLOT(addWindow(Window)));
+    connect(this->windowListener, SIGNAL(windowDeleted(Window)),
+            this->gestureCollector, SLOT(removeWindow(Window)));
+
+    // Conectamos el GestureCollector con el GestureHandler para que el último
+    // trate los eventos que recoge el primero
+    connect(gestureCollector, SIGNAL(executeGestureStart(
+            QString, int, QHash<QString, QVariant>)),
+            gestureHandler, SLOT(executeGestureStart(
+                    QString, int, QHash<QString, QVariant>)));
+    connect(gestureCollector, SIGNAL(executeGestureUpdate(
+            QString, int, QHash<QString, QVariant>)),
+            gestureHandler, SLOT(executeGestureUpdate(
+                    QString, int, QHash<QString, QVariant>)));
+    connect(gestureCollector, SIGNAL(executeGestureFinish(
+            QString, int, QHash<QString, QVariant>)),
+            gestureHandler, SLOT(executeGestureFinish(
+                    QString, int, QHash<QString, QVariant>)));
+
     // Nos suscribimos a los gestos globales
     this->gestureCollector->addWindow(QX11Info::appRootWindow());
 
-    // Obtenemos la lista actual de ventanas para suscribirnos a ellas
-    this->clientList = this->getClientList();
-
-    foreach(Window w, this->clientList) {
+    // Nos suscribimos a los gestos específicos
+    foreach(Window w, this->windowListener->getClientList()) {
         this->gestureCollector->addWindow(w);
-    }
-}
-
-
-// ************************************************************************** //
-// **********                   PROTECTED METHODS                  ********** //
-// ************************************************************************** //
-
-bool Touchegg::x11EventFilter(XEvent* event)
-{
-    if(event->type == PropertyNotify && event->xproperty.atom == XInternAtom(
-            QX11Info::display(), "_NET_CLIENT_LIST", false)) {
-        bool isNew;
-        QList<Window> oldList = this->clientList;
-        this->clientList = this->getClientList();
-
-        Window w = this->getDifferentWindow(this->clientList, oldList, &isNew);
-
-        if(w != None) {
-            if(isNew)
-                this->gestureCollector->addWindow(w);
-            else
-                this->gestureCollector->removeWindow(w);
-        }
-
-    }
-    return false;
-}
-
-
-// ************************************************************************** //
-// **********                   PRIVATE METHODS                    ********** //
-// ************************************************************************** //
-
-QList<Window> Touchegg::getClientList() const
-{
-    Atom atomRet;
-    int size;
-    unsigned long numItems, bytesAfterReturn;
-    unsigned char* propRet;
-    long offset = 0;
-    long offsetSize = 100;
-    int status;
-    Atom atomList = XInternAtom(QX11Info::display(), "_NET_CLIENT_LIST", false);
-    QList<Window> ret;
-
-    do {
-        status = XGetWindowProperty(QX11Info::display(),
-                QX11Info::appRootWindow(), atomList, offset, offsetSize, false,
-                XA_WINDOW, &atomRet,&size,&numItems,&bytesAfterReturn,&propRet);
-
-        if(status == Success) {
-            Window* aux = (Window*)propRet;
-            unsigned int n=0;
-            while(n < numItems) {
-                ret.append(aux[n]);
-                n++;
-            }
-            offset += offsetSize;
-            XFree(propRet);
-        }
-    } while(status == Success && bytesAfterReturn != 0);
-
-    return ret;
-}
-
-Window Touchegg::getDifferentWindow(QList<Window> lnew, QList<Window> lold,
-        bool* isNew) const
-{
-    if(lnew == lold) {
-        return None;
-    } else {
-        // Como _NET_CLIENT_LIST lleva un orden de primero las ventanas viejas y
-        // luego las nuevas, nos basta con devolver la última ventana de la
-        // lista más larga
-        *isNew = lnew.length() > lold.length();
-        return lnew.length() > lold.length() ? lnew.last() : lold.last();
     }
 }

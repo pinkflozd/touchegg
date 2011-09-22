@@ -24,17 +24,17 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-MouseClick::MouseClick(const QString& settings, Window window)
-        : Action(settings, window)
+MouseClick::MouseClick(const QString &settings, Window window)
+    : Action(settings, window)
 {
     this->button = 1;
 
     QStringList strl = settings.split("=");
-    if(strl.length() == 2 && strl.at(0) == "BUTTON") {
+    if (strl.length() == 2 && strl.at(0) == "BUTTON") {
         bool ok = false;
         int aux = strl.at(1).toInt(&ok);
 
-        if(ok && aux>=1 && aux<=9)
+        if (ok && aux >= 1 && aux <= 9)
             this->button = aux;
         else
             qWarning() << "Error reading MOUSE_CLICK settings, using " <<

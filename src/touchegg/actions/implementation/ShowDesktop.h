@@ -25,10 +25,6 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Muestra el escritorio.
- *
- * @~english
  * Shows the desktop.
  */
 class ShowDesktop : public Action
@@ -36,7 +32,7 @@ class ShowDesktop : public Action
 
 public:
 
-    ShowDesktop(const QString& settings, Window window);
+    ShowDesktop(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 

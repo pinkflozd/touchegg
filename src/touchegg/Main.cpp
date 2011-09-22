@@ -17,21 +17,14 @@
  *
  * @author José Expósito <jose.exposito89@gmail.com> (C) 2011
  */
-#include "src/touchegg/util/Include.h"
 #include "src/touchegg/Touchegg.h"
 
 /**
- * @~spanish
- * Función de inicio de Touchégg.
- * @param argc Número de argumentos recibidos por consola.
- * @param argv Lista de argumentos.
- *
- * @~english
  * Start function for Touchégg.
  * @param argc Number of arguments received by console.
  * @param argv Argument list.
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     Touchegg touchegg(argc, argv);
     return touchegg.exec();

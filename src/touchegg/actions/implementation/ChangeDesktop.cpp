@@ -24,14 +24,14 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-ChangeDesktop::ChangeDesktop(const QString& settings, Window window)
-        : Action(settings, window)
+ChangeDesktop::ChangeDesktop(const QString &settings, Window window)
+    : Action(settings, window)
 {
     this->next = true;
 
-    if(settings == "PREVIOUS")
+    if (settings == "PREVIOUS")
         this->next = false;
-    else if(settings == "NEXT")
+    else if (settings == "NEXT")
         this->next = true;
     else
         qWarning() << "Error reading CHANGE_VIEWPORT settings, using " <<
@@ -53,13 +53,13 @@ void ChangeDesktop::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     Atom atomRet;
     int size;
     unsigned long numItems, bytesAfterReturn;
-    unsigned char* propRet;
+    unsigned char *propRet;
 
     XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
             XInternAtom(QX11Info::display(), "_NET_NUMBER_OF_DESKTOPS", false),
             0, 1, false, XA_CARDINAL, &atomRet, &size, &numItems,
             &bytesAfterReturn, &propRet);
-    int numDesktops = (int)*propRet;
+    int numDesktops = (int) * propRet;
     XFree(propRet);
 
     // Obtenemos el escritorio actual
@@ -67,7 +67,7 @@ void ChangeDesktop::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
             XInternAtom(QX11Info::display(), "_NET_CURRENT_DESKTOP", false),
             0, 1, false, XA_CARDINAL, &atomRet, &size, &numItems,
             &bytesAfterReturn, &propRet);
-    int currentDesktop = (int)*propRet;
+    int currentDesktop = (int) * propRet;
     XFree(propRet);
 
     // Cambiamos al escritorio siguiente o anterior
@@ -86,6 +86,6 @@ void ChangeDesktop::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     XSendEvent(QX11Info::display(),
             QX11Info::appRootWindow(QX11Info::appScreen()), false,
             (SubstructureNotifyMask | SubstructureRedirectMask),
-            (XEvent*)&event);
+            (XEvent *)&event);
     XFlush(QX11Info::display());
 }

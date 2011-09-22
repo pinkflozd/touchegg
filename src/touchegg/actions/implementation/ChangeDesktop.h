@@ -25,35 +25,27 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Cambia de escritorio.
- *
- * @~english
  * Change the desktop.
  */
 class ChangeDesktop : public Action
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Dirección en la que cambiar de escritorio.
-     *
-     * @~english
-     * Direction to switch desktops.
-     */
-    bool next;
-
 public:
 
-    ChangeDesktop(const QString& settings, Window window);
+    ChangeDesktop(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 
     void executeUpdate(const QHash<QString, QVariant>& attrs);
 
     void executeFinish(const QHash<QString, QVariant>& attrs);
+
+private:
+
+    /**
+     * Direction to switch desktops.
+     */
+    bool next;
 };
 
 #endif // CHANGEDESKTOP_H

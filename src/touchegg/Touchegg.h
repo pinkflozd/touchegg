@@ -22,167 +22,70 @@
 #define TOUCHEGG_H
 
 #include "src/touchegg/util/Include.h"
+#include "src/touchegg/windows/WindowListener.h"
 #include "src/touchegg/gestures/collector/GestureCollector.h"
 #include "src/touchegg/gestures/handler/GestureHandler.h"
 
 /**
- * @~spanish
- * Inicializa y conecta el GestureCollector y el GestureHandler. Además escucha
- * la creación/destrucción de ventanas, indicandoselo al GestureCollector.
- *
- * @~english
- * Initializes and connect the GestureCollector and the GestureHandler. In
- * addition, listens for the creation/destruction of windows, sending signals to
- * the GestureCollector.
+ * Initializes and launches Touchégg. To do this uses this three clases:
+ * - WindowListener: To detect the creation or destruction of the windows and
+ *       listen, if is neccessary, the multitouch events in that window.
+ * - GestureCollector: To get the multitouch events in the windows selected by
+ *       the WindowListener.
+ * - GestureHandler: To treat the multitouch events collected by the
+ *       GestureCollector.
  */
 class Touchegg : public QApplication
 {
     Q_OBJECT
 
-private:
+public:
 
     /**
-     * @~spanish
-     * Bucle que recoge todos los gestos producidos.
-     *
-     * @~english
-     * Loop that collects all the gestures produced.
+     * Creates all the necessary classes, but Touchégg will be launched in the
+     * start() slot, when uTouch will be ready.
      */
-    GestureCollector* gestureCollector;
-
-    /**
-     * @~spanish
-     * Recoge todos los gestos que captura GestureCollector y los trata.
-     *
-     * @~english
-     * Collect all the gestures that captures GestureCollector and handle.
-     */
-    GestureHandler* gestureHandler;
-
-    /**
-     * @~spanish
-     * Lista con las ventanas existentes. Es necesaria para poder subscribirnos
-     * a los eventos multitouch de las ventanas que lo requieran.
-     *
-     * @~englis
-     * List with the existing windows. Is necessary for subscribe to de
-     * multitouch events to the windows that requires it.
-     */
-    QList<Window> clientList;
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * @~spanish
-     * Devuelve la lista de ventanas existentes.
-     * @return Dicha lista.
-     *
-     * @~english
-     * Returns the list of existing windows.
-     * @return The list.
-     */
-    QList<Window> getClientList() const;
-
-    /**
-     * @~spanish
-     * Dadas dos listas de ventanas devuelve la diferencia entre ellas, que
-     * coincidirá con la última ventana creada/eliminada.
-     * @param  lnew  La lista con las ventanas nuevas.
-     * @param  lold  La lista con las ventanas viejas.
-     * @param  isNew true si la ventana devuelta ha sido creada, false si ha
-     *         sido eliminada.
-     * @return La ventana creada/eliminada o None si las dos listas son iguales.
-     *
-     * @~english
-     * Given two lists of windows returns the difference between them,
-     * corresponding to the last window created/deleted.
-     * @param  lnew  The list with the new windows.
-     * @param  lold  The list with the old windows.
-     * @param  isNew true if the returned window has been created, false if has
-     *         been deleted.
-     * @return The created/deleted window or None if the two list are equals.
-     */
-    Window getDifferentWindow(QList<Window> lnew, QList<Window> lold,
-            bool* isNew) const;
+    Touchegg(int argc, char **argv);
 
 protected:
 
     /**
-     * @~spanish
-     * Reimplementa el método QApplication::x11EventFilter. En este método se
-     * recibirán las notificaciones de creación/destrucción de ventanas (previa
-     * llamada a XSelectInput en el constructor) y se gestionarán como
-     * corresponda.
-     * @param event El evento que se ha producido.
-     * @return true para evitar que el evento sea tratado con normalidad, es
-     *         decir, cuando ya lo tratamos nosotros, false para que el
-     *         evento se trate connormalidad.
-     *
-     * @~english
      * Reimplement the method QApplication::x11EventFilter. This method receives
-     * the notifications of creation/destruction of windows (previously calling
-     * XSelectInput function in the constructor) and manage it as appropiate
-     * using the correct event handler.
+     * the notifications of creation/destruction of windows and manage it as
+     * appropiate using WindowListener.
      * @param event The event that occurred.
      * @return true if you want to stop the event from being processed, ie
      *         when we treat ourselves, false for normal event dispatching.
      */
-    virtual bool x11EventFilter(XEvent* event);
-
-public:
-
-    /**
-     * @~spanish
-     * Inicializa Touchégg.
-     *
-     * @~english
-     * Initializes Touchégg.
-     */
-    Touchegg(int argc, char** argv);
-
-    /**
-     * @~spanish
-     * Destructor.
-     *
-     * @~english
-     * Destructor.
-     */
-    virtual ~Touchegg();
+    virtual bool x11EventFilter(XEvent *event);
 
 private slots:
 
     /**
-     * @~spanish
-     * Lanza Touchégg
-     *
-     * @~english
-     * Launch Touchégg.
+     * This slot is called when uTouch is ready. Launches Touchégg.
      */
     void start();
 
-signals:
+private:
 
     /**
-     * @~spanish
-     * Señal que se envía al GestureCollector para que escuche los eventos
-     * multitouch en la ventana indicada.
-     *
-     * @~english
-     * Signal that is send to the GestureCollector for listen the multitouch
-     * events in the specified window.
+     * Class to get the creation and destruction of windows.
+     * @see x11EventFilter()
+     * @see WindowListener
      */
-    void addListener(Window w);
+    WindowListener *windowListener;
 
     /**
-     * @~spanish
-     * Señal que se envía al GestureCollector para que deje de escuchar los
-     * eventos multitouch en la ventana indicada.
-     *
-     * @~english
-     * Signal that is send to the GestureCollector for stop listen the
-     * multitouch events in the specified window.
+     * Class to collect all the gestures.
+     * @see GestureCollector
      */
-    void removeListener(Window w);
+    GestureCollector *gestureCollector;
+
+    /**
+     * Class to treat the gestures and execute the corresponding action.
+     * @see GestureHandler
+     */
+    GestureHandler *gestureHandler;
 
 };
 

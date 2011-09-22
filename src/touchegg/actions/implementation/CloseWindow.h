@@ -25,18 +25,14 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Cierra la ventana activa.
- *
- * @~english
- * Closes the active window.
+ * Closes the window under the cursor.
  */
 class CloseWindow : public Action
 {
 
 public:
 
-    CloseWindow(const QString& settings, Window window);
+    CloseWindow(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 

@@ -24,8 +24,8 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-MoveWindow::MoveWindow(const QString& settings, Window window)
-        : Action(settings, window) {}
+MoveWindow::MoveWindow(const QString &settings, Window window)
+    : Action(settings, window) {}
 
 
 // ************************************************************************** //
@@ -42,7 +42,7 @@ void MoveWindow::executeStart(const QHash<QString, QVariant>& /*attrs*/)
 
 void MoveWindow::executeUpdate(const QHash<QString, QVariant>& attrs)
 {
-    if(!attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_X)
+    if (!attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_X)
             || !attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_Y))
         return;
 

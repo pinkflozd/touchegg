@@ -25,10 +25,6 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Minimiza la ventana activa.
- *
- * @~english
  * Minimizes active window.
  */
 class MinimizeWindow : public Action
@@ -36,7 +32,7 @@ class MinimizeWindow : public Action
 
 public:
 
-    MinimizeWindow(const QString& settings, Window window);
+    MinimizeWindow(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 

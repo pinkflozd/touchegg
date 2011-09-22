@@ -24,10 +24,6 @@
 #include "src/touchegg/util/Include.h"
 
 /**
- * @~spanish
- * Contiene un tipo enumerado con las acciones soportadas.
- *
- * @~english
  * Contains a enumeradted type with supported actions.
  */
 class ActionTypeEnum : public QObject
@@ -39,10 +35,6 @@ class ActionTypeEnum : public QObject
 public:
 
     /**
-     * @~spanish
-     * Tipo enumerado con las acciones soportadas.
-     *
-     * @~english
      * Enumerated type with supported actions.
      */
     enum ActionType {
@@ -63,26 +55,16 @@ public:
     };
 
     /**
-     * @~spanish
-     * Convierte el tipo enumedrado a QString.
-     * @return El QString
-     *
-     * @~english
      * Converts the enum to QString.
      * @return The QString.
      */
     static QString getValue(ActionType atEnum);
 
     /**
-     * @~spanish
-     * Convierte el QString indicado en su equivalente tipo enumedrado.
-     * @return El tipo enumerado
-     *
-     * @~english
      * Converts the indicated QString to the equivalent enum type.
      * @return The enum type.
      */
-    static ActionType getEnum(const QString& atString);
+    static ActionType getEnum(const QString &atString);
 };
 
 #endif // ACTIONTYPEENUM_H

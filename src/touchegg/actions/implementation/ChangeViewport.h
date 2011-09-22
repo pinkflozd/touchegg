@@ -25,35 +25,28 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Cambia el viewport.
- *
- * @~english
  * Change the viewport.
  */
 class ChangeViewport : public Action
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Dirección en la que cambiar de escritorio.
-     *
-     * @~english
-     * Direction to switch desktops.
-     */
-    bool next;
-
 public:
 
-    ChangeViewport(const QString& settings, Window window);
+    ChangeViewport(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 
     void executeUpdate(const QHash<QString, QVariant>& attrs);
 
     void executeFinish(const QHash<QString, QVariant>& attrs);
+
+private:
+
+    /**
+     * Direction to switch desktops.
+     */
+    bool next;
+
 };
 
 #endif // CHANGEVIEWPORT_H

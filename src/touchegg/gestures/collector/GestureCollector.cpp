@@ -26,7 +26,7 @@
 
 void GestureCollector::gestureStart(GestureCollector *gc, GeisEvent event)
 {
-    // type is GEIS_GESTURE_TYPE_TAP1, GEIS_GESTURE_TYPE_PINCH3...
+    // "type" es GEIS_GESTURE_TYPE_TAP1, GEIS_GESTURE_TYPE_PINCH3...
     QHash<QString, QVariant> attrs = getGestureAttrs(event);
     QString type = attrs.value(
             GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME).toString();
@@ -57,7 +57,8 @@ void GestureCollector::gestureFinish(GestureCollector *gc, GeisEvent event)
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-GestureCollector::GestureCollector()
+GestureCollector::GestureCollector(QObject *parent)
+    : QObject(parent)
 {
     /* La instancia de GEIS es única, por lo que se puede tener un único bucle
      * para recoger los gestos en run(). Con GEIS v2.0 se pueden añadir
@@ -79,12 +80,66 @@ GestureCollector::GestureCollector()
 GestureCollector::~GestureCollector()
 {
     geis_delete(this->geis);
-    delete this->socketNotifier;
 }
 
 
 // ************************************************************************** //
-// **********                   PROTECTED METHOS                   ********** //
+// **********                     PUBLIC SLOTS                     ********** //
+// ************************************************************************** //
+
+void GestureCollector::addWindow(Window w)
+{
+    // Si no hay que escuchar por ningún gesto en la ventana indicada salimos
+    Config *cfg = Config::getInstance();
+
+    QList< QPair<QStringList, int> > subscribeList;
+    if (w == QX11Info::appRootWindow())
+        subscribeList = cfg->getUsedGestures("All");
+    else
+        subscribeList = cfg->getUsedGestures(this->getWindowClass(w));
+
+    if (subscribeList.length() == 0)
+        return;
+
+    // Nos suscribimos solo a los gestos que nos interesan
+    for (int n = 0; n < subscribeList.length(); n++) {
+        QPair<QStringList, int> aux = subscribeList.at(n);
+        int numFingers = aux.second;
+
+        foreach(QString gesture, aux.first) {
+            // Creamos el filtro
+            GeisFilter filter = geis_filter_new(this->geis, "filter");
+
+            geis_filter_add_term(filter,
+                    GEIS_FILTER_CLASS,
+                    GEIS_GESTURE_ATTRIBUTE_TOUCHES, GEIS_FILTER_OP_EQ,
+                    numFingers,
+                    GEIS_CLASS_ATTRIBUTE_NAME, GEIS_FILTER_OP_EQ,
+                    gesture.toStdString().c_str(),
+                    NULL);
+
+            // Escuchamos en la ventana indicada
+            geis_filter_add_term(filter, GEIS_FILTER_REGION,
+                    GEIS_REGION_ATTRIBUTE_WINDOWID, GEIS_FILTER_OP_EQ, w);
+
+            // Creamos la subcripción, le añadimos el filtro y la activamos
+            GeisSubscription subscription = geis_subscription_new(
+                    this->geis, "subscription", GEIS_SUBSCRIPTION_CONT);
+            geis_subscription_add_filter(subscription, filter);
+            geis_subscription_activate(subscription);
+        }
+    }
+}
+
+void GestureCollector::removeWindow(Window /*w*/)
+{
+    // TODO: Si se intenta eliminar peta aleatoriamente. Comprobar si sigue
+    //       pasando con el QSocketNotifier
+}
+
+
+// ************************************************************************** //
+// **********                    PRIVATE SLOTS                     ********** //
 // ************************************************************************** //
 
 void GestureCollector::geisEvent()
@@ -125,60 +180,6 @@ void GestureCollector::geisEvent()
 
 
 // ************************************************************************** //
-// **********                    PUBLIC METHODS                    ********** //
-// ************************************************************************** //
-
-void GestureCollector::addWindow(Window w)
-{
-    // Si no hay que escuchar por ningún gesto en la ventana indicada salimos
-    Config* cfg = Config::getInstance();
-
-    QList< QPair<QStringList, int> > subscribeList;
-    if (w == QX11Info::appRootWindow())
-        subscribeList = cfg->getUsedGestures("All");
-    else
-        subscribeList = cfg->getUsedGestures(this->getWindowClass(w));
-
-    if (subscribeList.length() == 0)
-        return;
-
-    // Nos suscribimos solo a los gestos que nos interesan
-    for (int n=0; n<subscribeList.length(); n++) {
-        QPair<QStringList, int> aux = subscribeList.at(n);
-        int numFingers = aux.second;
-
-        foreach (QString gesture, aux.first) {
-            // Creamos el filtro
-            GeisFilter filter = geis_filter_new(this->geis, "filter");
-
-            geis_filter_add_term(filter,
-                    GEIS_FILTER_CLASS,
-                    GEIS_GESTURE_ATTRIBUTE_TOUCHES, GEIS_FILTER_OP_EQ,
-                            numFingers,
-                    GEIS_CLASS_ATTRIBUTE_NAME, GEIS_FILTER_OP_EQ,
-                            gesture.toStdString().c_str(),
-                    NULL);
-
-            // Escuchamos en la ventana indicada
-            geis_filter_add_term(filter, GEIS_FILTER_REGION,
-                    GEIS_REGION_ATTRIBUTE_WINDOWID, GEIS_FILTER_OP_EQ, w);
-
-            // Creamos la subcripción, le añadimos el filtro y la activamos
-            GeisSubscription subscription = geis_subscription_new(
-                    this->geis, "subscription", GEIS_SUBSCRIPTION_CONT);
-            geis_subscription_add_filter(subscription, filter);
-            geis_subscription_activate(subscription);
-        }
-    }
-}
-
-void GestureCollector::removeWindow(Window /*w*/)
-{
-    // Si se intenta eliminar peta aleatoriamente
-}
-
-
-// ************************************************************************** //
 // **********                    PRIVATE METHODS                   ********** //
 // ************************************************************************** //
 
@@ -186,14 +187,15 @@ QHash<QString, QVariant> GestureCollector::getGestureAttrs(GeisEvent event)
 {
     QHash<QString, QVariant> ret;
 
-    GeisAttr attr = geis_event_attr_by_name(event, GEIS_EVENT_ATTRIBUTE_GROUPSET);
+    GeisAttr attr = geis_event_attr_by_name(event,
+            GEIS_EVENT_ATTRIBUTE_GROUPSET);
     GeisGroupSet groupset = (GeisGroupSet)geis_attr_value_to_pointer(attr);
 
-    for (GeisSize i= 0; i < geis_groupset_group_count(groupset); ++i) {
+    for (GeisSize i = 0; i < geis_groupset_group_count(groupset); ++i) {
         GeisSize j;
         GeisGroup group = geis_groupset_group(groupset, i);
 
-        for (j=0; j < geis_group_frame_count(group); ++j) {
+        for (j = 0; j < geis_group_frame_count(group); ++j) {
             GeisSize k;
             GeisFrame frame = geis_group_frame(group, j);
             GeisSize attr_count = geis_frame_attr_count(frame);
@@ -232,7 +234,7 @@ QHash<QString, QVariant> GestureCollector::getGestureAttrs(GeisEvent event)
 
 QString GestureCollector::getWindowClass(Window window) const
 {
-    XClassHint* classHint = XAllocClassHint();
+    XClassHint *classHint = XAllocClassHint();
     XGetClassHint(QX11Info::display(), window, classHint);
     QString ret = classHint->res_class;
     XFree(classHint->res_class);

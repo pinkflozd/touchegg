@@ -24,8 +24,8 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-MinimizeWindow::MinimizeWindow(const QString& settings, Window window)
-        : Action(settings, window) {}
+MinimizeWindow::MinimizeWindow(const QString &settings, Window window)
+    : Action(settings, window) {}
 
 
 // ************************************************************************** //
@@ -50,6 +50,6 @@ void MinimizeWindow::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
     XSendEvent(QX11Info::display(),
             QX11Info::appRootWindow(QX11Info::appScreen()), false,
             (SubstructureNotifyMask | SubstructureRedirectMask),
-            (XEvent*)&event);
+            (XEvent *)&event);
     XFlush(QX11Info::display());
 }

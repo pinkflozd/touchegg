@@ -24,10 +24,6 @@
 #include "src/touchegg/util/Include.h"
 
 /**
- * @~spanish
- * Contiene un tipo enumerado con los gestos soportados.
- *
- * @~english
  * Contains a enumeradted type with supported gestures.
  */
 class GestureTypeEnum : public QObject
@@ -39,10 +35,6 @@ class GestureTypeEnum : public QObject
 public:
 
     /**
-     * @~spanish
-     * Tipo enumerado con los gestos soportados.
-     *
-     * @~english
      * Enumerated type with supported gestures.
      */
     enum GestureType {
@@ -55,45 +47,24 @@ public:
     };
 
     /**
-     * @~spanish
-     * Convierte el tipo enumedrado a QString.
-     * @return El QString
-     *
-     * @~english
      * Converts the enum to QString.
      * @return The QString.
      */
     static QString getValue(GestureType gtEnum);
 
     /**
-     * @~spanish
-     * Convierte el QString indicado en su equivalente tipo enumedrado.
-     * @return El tipo enumerado
-     *
-     * @~english
      * Converts the indicated QString to the equivalent enum type.
      * @return The enum type.
      */
-    static GestureType getEnum(const QString& gtString);
+    static GestureType getEnum(const QString &gtString);
 
     /**
-     * @~spanish
-     * Devuelve una lista con los gestos de uTouch-GEIS equivalentes al
-     * gesto indicado, si no tiene un equivalente, devuelve una lista vacía.
-     * Por ejemplo, el equivalente de un gesto tap_and_hold es
-     * {GEIS_GESTURE_TAP, GEIS_GESTURE_DRAG}.
-     * @param  gt El gesto.
-     * @param  numFingers Número de dedos usados en el gesto.
-     * @return Su equivalente.
-     *
-     * @~english
      * Returns a list with the equivalents uTouch-GEIS gestures to the
      * indicated gesture, if it doesn't have equivalent, returns an empty
      * list.
      * For example, the equivalent of a tap_and_hold gesture is
      * {GEIS_GESTURE_TAP, GEIS_GESTURE_DRAG}.
      * @param  gt The gesture.
-     * @param  numFingers Number of fingers used in the gesture.
      * @return The equivalent.
      */
     static QStringList getGeisEquivalent(GestureType gt);

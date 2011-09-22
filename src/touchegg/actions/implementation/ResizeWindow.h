@@ -25,10 +25,6 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Redimensiona la ventana activa.
- *
- * @~english
  * Resizes active window.
  */
 class ResizeWindow : public Action
@@ -36,7 +32,7 @@ class ResizeWindow : public Action
 
 public:
 
-    ResizeWindow(const QString& settings, Window window);
+    ResizeWindow(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 

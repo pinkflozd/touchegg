@@ -26,35 +26,28 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Ejecuta el comando indicado en la configuración.
- *
- * @~english
  * Runs the command specified in the configuration.
  */
 class RunCommand : public Action
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Comando a ejecutar.
-     *
-     * @~english
-     * Command to execute.
-     */
-    QString command;
-
 public:
 
-    RunCommand(const QString& settings, Window window);
+    RunCommand(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 
     void executeUpdate(const QHash<QString, QVariant>& attrs);
 
     void executeFinish(const QHash<QString, QVariant>& attrs);
+
+private:
+
+    /**
+     * Command to execute.
+     */
+    QString command;
+
 };
 
 #endif // RUNCOMMAND_H

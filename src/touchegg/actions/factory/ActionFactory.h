@@ -40,54 +40,20 @@
 #include "src/touchegg/actions/implementation/DragAndDrop.h"
 
 /**
- * @~spanish
- * Factoría para crear las distintas acciones.
- *
- * @~english
  * Factory to create the different actions.
  */
 class ActionFactory
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Única instancia de la clase.
-     *
-     * @~english
-     * Single instance of the class.
-     */
-    static ActionFactory* instance;
-
-    // Hide constructors
-    ActionFactory(){}
-    ActionFactory(const ActionFactory&);
-    const ActionFactory& operator = (const ActionFactory&);
-
 public:
 
     /**
-     * @~spanish
-     * Único método para obtener una instancia de la clase.
-     * @return La única instancia de la clase.
-     *
-     * @~english
      * Only method to get an instance of the class.
      * @return The single instance of the class.
      */
-    static ActionFactory* getInstance();
+    static ActionFactory *getInstance();
 
     /**
-     * @~spanish
-     * Crea la acción indicada, si no existe devuelve NULL.
-     * IMPORTANTE: No olvidar liberar memoria.
-     * @param  actionType Tipo de acción a crear.
-     * @param  settings   Configuración de la acción.
-     * @param  window     Ventana sobre la que ejecutar la acción.
-     * @return La acción.
-     *
-     * @~english
      * Creates the specified action, if it not exist returns NULL.
      * IMPORTANT: Don't forget to free memory.
      * @param  actionType Action type to create.
@@ -95,9 +61,20 @@ public:
      * @param  window     Window on which execute the action.
      * @return The action.
      */
-    Action* createAction(ActionTypeEnum::ActionType actionType,
-        const QString& settings, Window window);
+    Action *createAction(ActionTypeEnum::ActionType actionType,
+            const QString &settings, Window window);
 
+private:
+
+    /**
+     * Single instance of the class.
+     */
+    static ActionFactory *instance;
+
+    // Hide constructors
+    ActionFactory() {}
+    ActionFactory(const ActionFactory &);
+    const ActionFactory &operator = (const ActionFactory &);
 };
 
 #endif // ACTIONFACTORY_H

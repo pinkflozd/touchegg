@@ -25,18 +25,14 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Mueve la ventana bajo el cursor.
- *
- * @~english
- * Moves the window under cursor.
+ * Moves the window under the cursor.
  */
 class MoveWindow : public Action
 {
 
 public:
 
-    MoveWindow(const QString& settings, Window window);
+    MoveWindow(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 

@@ -25,44 +25,33 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Envía las teclas indicadas en la configuración a la ventana bajo el cursor.
- *
- * @~english
  * Sends the keys indicated in the configuration to the window under the cursor.
  */
 class SendKeys : public Action
 {
 
-private:
-
-    /**
-     * @~spanish
-     * Teclas a mantener pulsadas mientras se envían el resto de teclas.
-     *
-     * @~english
-     * Keys to hold down while sending the rest of keys.
-     */
-    QList<KeyCode> holdDownKeys;
-
-    /**
-     * @~spanish
-     * Teclas a enviar mientras se mantienen pulsadas las holdDownKeys.
-     *
-     * @~english
-     * Keys to send while holdDownKeys are sending.
-     */
-    QList<KeyCode> pressBetweenKeys;
-
 public:
 
-    SendKeys(const QString& settings, Window window);
+    SendKeys(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 
     void executeUpdate(const QHash<QString, QVariant>& attrs);
 
     void executeFinish(const QHash<QString, QVariant>& attrs);
+
+private:
+
+    /**
+     * Keys to hold down while sending the rest of keys.
+     */
+    QList<KeyCode> holdDownKeys;
+
+    /**
+     * Keys to send while holdDownKeys are sending.
+     */
+    QList<KeyCode> pressBetweenKeys;
+
 };
 
 #endif // SENDKEYS_H

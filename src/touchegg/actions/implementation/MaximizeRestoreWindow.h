@@ -25,10 +25,6 @@
 #include "src/touchegg/actions/implementation/Action.h"
 
 /**
- * @~spanish
- * Maximiza la ventana activa.
- *
- * @~english
  * Maximizes active window.
  */
 class MaximizeRestoreWindow : public Action
@@ -36,7 +32,7 @@ class MaximizeRestoreWindow : public Action
 
 public:
 
-    MaximizeRestoreWindow(const QString& settings, Window window);
+    MaximizeRestoreWindow(const QString &settings, Window window);
 
     void executeStart(const QHash<QString, QVariant>& attrs);
 

@@ -34,7 +34,7 @@ QString GestureDirectionEnum::getValue(GestureDirection gdEnum)
 }
 
 GestureDirectionEnum::GestureDirection GestureDirectionEnum::getEnum(
-        const QString& gdString)
+    const QString &gdString)
 {
     GestureDirectionEnum GestureDirectionEnum;
     int index = GestureDirectionEnum.metaObject()->indexOfEnumerator(

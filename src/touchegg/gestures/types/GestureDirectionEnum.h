@@ -24,10 +24,6 @@
 #include "src/touchegg/util/Include.h"
 
 /**
- * @~spanish
- * Contiene un tipo enumerado con las posibles direcciones de los gestos.
- *
- * @~english
  * Contains an enumerated type with availables directions of gestures.
  */
 class GestureDirectionEnum : public QObject
@@ -39,10 +35,6 @@ class GestureDirectionEnum : public QObject
 public:
 
     /**
-     * @~spanish
-     * Tipo enumerado con las direcciones disponibles.
-     *
-     * @~english
      * Enumerated type with supported directions.
      */
     enum GestureDirection {
@@ -57,26 +49,16 @@ public:
     };
 
     /**
-     * @~spanish
-     * Convierte el tipo enumedrado a QString.
-     * @return El QString
-     *
-     * @~english
      * Converts the enum to QString.
      * @return The QString.
      */
     static QString getValue(GestureDirection gtEnum);
 
     /**
-     * @~spanish
-     * Convierte el QString indicado en su equivalente tipo enumedrado.
-     * @return El tipo enumerado
-     *
-     * @~english
      * Converts the indicated QString to the equivalent enum type.
      * @return The enum type.
      */
-    static GestureDirection getEnum(const QString& gtString);
+    static GestureDirection getEnum(const QString &gtString);
 
 };
 

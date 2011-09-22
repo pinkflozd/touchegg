@@ -32,7 +32,7 @@ QString GestureTypeEnum::getValue(GestureType gtEnum)
     return metaEnum.valueToKey(gtEnum);
 }
 
-GestureTypeEnum::GestureType GestureTypeEnum::getEnum(const QString& gtString)
+GestureTypeEnum::GestureType GestureTypeEnum::getEnum(const QString &gtString)
 {
     GestureTypeEnum gestureTypeEnum;
     int index = gestureTypeEnum.metaObject()->indexOfEnumerator("GestureType");
@@ -43,7 +43,7 @@ GestureTypeEnum::GestureType GestureTypeEnum::getEnum(const QString& gtString)
 
 QStringList GestureTypeEnum::getGeisEquivalent(GestureType gt)
 {
-    switch(gt) {
+    switch (gt) {
 
     case TAP:
         return QStringList(GEIS_GESTURE_TAP);

@@ -24,11 +24,11 @@
 // **********             STATIC METHODS AND VARIABLES             ********** //
 // ************************************************************************** //
 
-ActionFactory* ActionFactory::instance = NULL;
+ActionFactory *ActionFactory::instance = NULL;
 
-ActionFactory* ActionFactory::getInstance()
+ActionFactory *ActionFactory::getInstance()
 {
-    if(ActionFactory::instance == NULL)
+    if (ActionFactory::instance == NULL)
         ActionFactory::instance = new ActionFactory();
 
     return ActionFactory::instance;
@@ -39,10 +39,10 @@ ActionFactory* ActionFactory::getInstance()
 // **********                    PUBLIC METHODS                    ********** //
 // ************************************************************************** //
 
-Action* ActionFactory::createAction(ActionTypeEnum::ActionType actionType,
-        const QString& settings, Window window)
+Action *ActionFactory::createAction(ActionTypeEnum::ActionType actionType,
+        const QString &settings, Window window)
 {
-    switch(actionType) {
+    switch (actionType) {
     case ActionTypeEnum::NO_ACTION:
         return NULL;
 
