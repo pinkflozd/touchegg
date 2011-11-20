@@ -120,21 +120,52 @@ void GestureCollector::addWindow(Window w)
 
             // Escuchamos en la ventana indicada
             geis_filter_add_term(filter, GEIS_FILTER_REGION,
-                    GEIS_REGION_ATTRIBUTE_WINDOWID, GEIS_FILTER_OP_EQ, w);
+                    GEIS_REGION_ATTRIBUTE_WINDOWID, GEIS_FILTER_OP_EQ, w, NULL);
 
             // Creamos la subcripción, le añadimos el filtro y la activamos
             GeisSubscription subscription = geis_subscription_new(
                     this->geis, "subscription", GEIS_SUBSCRIPTION_CONT);
             geis_subscription_add_filter(subscription, filter);
             geis_subscription_activate(subscription);
+
+            // Guardamos la subcrición y el filtro para borrarlos cuando se
+            // destruya la ventana asociada
+            if (this->subscriptions.contains(w)) {
+                QList<GeisSubscription> aux = this->subscriptions.value(w);
+                aux.append(subscription);
+                this->subscriptions.insert(w, aux);
+            } else {
+                QList<GeisSubscription> aux;
+                aux.append(subscription);
+                this->subscriptions.insert(w, aux);
+            }
+
+            if (this->filters.contains(w)) {
+                QList<GeisFilter> aux = this->filters.value(w);
+                aux.append(filter);
+                this->filters.insert(w, aux);
+            } else {
+                QList<GeisFilter> aux;
+                aux.append(filter);
+                this->filters.insert(w, aux);
+            }
         }
     }
 }
 
-void GestureCollector::removeWindow(Window /*w*/)
+void GestureCollector::removeWindow(Window w)
 {
-    // TODO: Si se intenta eliminar peta aleatoriamente. Comprobar si sigue
-    //       pasando con el QSocketNotifier
+    QList<GeisSubscription> subs = this->subscriptions.value(w);
+    foreach (GeisSubscription s, subs) {
+        geis_subscription_delete(s);
+    }
+    this->subscriptions.remove(w);
+
+    QList<GeisFilter> fils = this->filters.value(w);
+    foreach (GeisFilter f, fils) {
+        geis_filter_delete(f);
+    }
+    this->filters.remove(w);
 }
 
 

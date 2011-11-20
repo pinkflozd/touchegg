@@ -137,6 +137,17 @@ private:
      */
     QSocketNotifier *socketNotifier;
 
+    /**
+     * Saves a list of the filters associated to a window to allow to unsuscribe
+     * when close the window.
+     */
+    QHash <Window, QList<GeisFilter> > filters;
+
+    /**
+     * Saves a list of the subscriptions associated to a window to allow to
+     * unsuscribe when close the window.
+     */
+    QHash <Window, QList<GeisSubscription> > subscriptions;
 };
 
 #endif // GESTURECOLLECTOR_H

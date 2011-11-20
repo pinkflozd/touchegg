@@ -35,8 +35,8 @@
     Remember that you can use astyle to indent the code automatically:
 
     astyle --style=k/r --indent=spaces=4 --convert-tabs \
-       --indent-labels --pad-oper --pad-header --unpad-paren \
-       --indent-namespaces --align-pointer=name \
+       --pad-header --unpad-paren \
+       --indent-namespaces --keep-one-line-blocks --align-pointer=name \
        --max-instatement-indent=8 --indent-col1-comments \
        --suffix=none \
        `find -type f -name '*.cpp'` `find -type f -name '*.h'`
