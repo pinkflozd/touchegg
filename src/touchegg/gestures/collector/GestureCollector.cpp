@@ -69,7 +69,6 @@ GestureCollector::GestureCollector(QObject *parent)
     if (!this->geis)
         qFatal("Failed to initialize geis instance");
 
-
     // Inicilizamos el socket que recibirá los eventos de uTouch
     int fd;
     geis_get_configuration(this->geis, GEIS_CONFIGURATION_FD, &fd);

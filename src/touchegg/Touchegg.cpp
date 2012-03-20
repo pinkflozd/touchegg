@@ -24,7 +24,7 @@
 // **********              CONSTRUCTORS AND DESTRUCTOR             ********** //
 // ************************************************************************** //
 
-Touchegg::Touchegg(int argc, char **argv)
+Touchegg::Touchegg(int &argc, char **argv)
     : QApplication(argc, argv),
       windowListener(new WindowListener(this)),
       gestureCollector(new GestureCollector(this)),

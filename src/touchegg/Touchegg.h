@@ -45,7 +45,7 @@ public:
      * Creates all the necessary classes, but Touchégg will be launched in the
      * start() slot, when uTouch will be ready.
      */
-    Touchegg(int argc, char **argv);
+    Touchegg(int &argc, char **argv);
 
 protected:
 
