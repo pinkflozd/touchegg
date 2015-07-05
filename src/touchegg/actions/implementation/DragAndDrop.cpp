@@ -28,6 +28,7 @@ DragAndDrop::DragAndDrop(const QString &settings, Window window)
     : Action(settings, window)
 {
     this->button = 1;
+    this->startNumFingers = 0;
 
     QStringList strl = settings.split("=");
     if (strl.length() == 2 && strl.at(0) == "BUTTON") {
@@ -55,11 +56,23 @@ void DragAndDrop::executeStart(const QHash<QString, QVariant>& /*attrs*/)
 
 void DragAndDrop::executeUpdate(const QHash<QString, QVariant>& attrs)
 {
+    int numFingers = attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES).toFloat();
+    if(startNumFingers == 0) {
+        startNumFingers = numFingers;
+    }
+
     if (!attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_X) || !attrs.contains(GEIS_GESTURE_ATTRIBUTE_DELTA_Y))
         return;
-
+    if (numFingers != startNumFingers)
+        return;
+    
+    /*
     QCursor::setPos(QCursor::pos().x() + attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_X).toFloat(),
             QCursor::pos().y() + attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_Y).toFloat());
+    */
+
+    QCursor::setPos(QCursor::pos().x() + (attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_X).toFloat() / attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES).toFloat()),
+            QCursor::pos().y() + (attrs.value(GEIS_GESTURE_ATTRIBUTE_DELTA_Y).toFloat() / attrs.value(GEIS_GESTURE_ATTRIBUTE_TOUCHES).toFloat()));
 }
 
 void DragAndDrop::executeFinish(const QHash<QString, QVariant>& /*attrs*/)
