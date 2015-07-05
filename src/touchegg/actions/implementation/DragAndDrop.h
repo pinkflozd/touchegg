@@ -46,7 +46,6 @@ private:
      * Button to emulate.
      */
     int button;
-    int startNumFingers;
 
 };
 
